@@ -5,6 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI and Python! - Online AI Teaching</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind scrollbar plugin styles - included directly -->
+    <style>
+        .scrollbar-thin {
+            scrollbar-width: thin; /* Firefox */
+        }
+        .scrollbar-thumb-custom {
+            scrollbar-color: var(--text-muted) var(--bg-accent); /* Firefox: thumb track */
+        }
+         /* === SCROLLBAR STYLING START === */
+         /* Styles for Webkit browsers (Chrome, Safari, Edge) */
+        .chapter-details.open::-webkit-scrollbar,
+        .exam-questions-container::-webkit-scrollbar,
+        .exam-review-container::-webkit-scrollbar,
+        .course-chapters-container::-webkit-scrollbar { /* ADDED */
+            width: 8px; /* Width of the scrollbar */
+        }
+        .chapter-details.open::-webkit-scrollbar-track,
+        .exam-questions-container::-webkit-scrollbar-track,
+        .exam-review-container::-webkit-scrollbar-track,
+        .course-chapters-container::-webkit-scrollbar-track { /* ADDED */
+            background: var(--bg-accent); /* Color of the track */
+            border-radius: 4px;
+        }
+        .chapter-details.open::-webkit-scrollbar-thumb,
+        .exam-questions-container::-webkit-scrollbar-thumb,
+        .exam-review-container::-webkit-scrollbar-thumb,
+        .course-chapters-container::-webkit-scrollbar-thumb { /* ADDED */
+            background-color: var(--text-muted); /* Color of the scroll thumb */
+            border-radius: 4px; /* Roundness of the scroll thumb */
+            border: 2px solid var(--bg-accent); /* Creates padding around thumb */
+        }
+         /* === SCROLLBAR STYLING END === */
+    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,7 +100,7 @@
             --popover-hover-bg: #4b5563;
             --popover-disabled-text: #6b7280;
         }
-        
+
         .theme-light-dark {
             --bg-primary: #1f2937; /* gray-800 */
             --bg-secondary: #374151; /* gray-700 */
@@ -86,7 +119,7 @@
             --popover-hover-bg: #6b7280;
             --popover-disabled-text: #9ca3af;
         }
-        
+
         .theme-light-gray {
             --bg-primary: #f3f4f6;
             --bg-secondary: #ffffff;
@@ -124,7 +157,7 @@
             --popover-hover-bg: #fce7f3;
             --popover-disabled-text: #fda4af;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-primary);
@@ -135,18 +168,18 @@
         .bg-primary { background-color: var(--bg-primary); }
         .bg-secondary { background-color: var(--bg-secondary); }
         .bg-accent { background-color: var(--bg-accent); }
-        #auth-modal > div { background-color: var(--bg-modal); }
+        #auth-modal > div, #exam-signin-modal > div, #exam-modal > div, #exam-results-modal > div, #admin-auth-modal > div { background-color: var(--bg-modal); }
         .text-primary { color: var(--text-primary); }
         .text-secondary { color: var(--text-secondary); }
         .text-muted { color: var(--text-muted); }
         .border-color { border-color: var(--border-color); }
         .shadow-dynamic { box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color); }
 
-        .hero-section { 
-            position: relative; 
-            height: 80vh; 
-            overflow: hidden; 
-            background-image: url('https://images.unsplash.com/photo-1597733336794-12d05021d510?q=80&w=1974&auto=format&fit=crop');
+        .hero-section {
+            position: relative;
+            height: 80vh;
+            overflow: hidden;
+            background-image: url('https://images.unsplash.com/photo-1597733336794-12d05021d510?q=80&w=1974&auto.format&fit=crop');
             background-size: cover;
             background-position: center;
         }
@@ -163,23 +196,48 @@
         .chapter-card {
             background-color: #bec6c3;
             border: 1px solid var(--border-color);
+            display: flex; /* Ensure flex layout */
+            flex-direction: column; /* Stack children vertically */
         }
         .chapter-card:hover, .feature-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color);
         }
 
-        .chapter-details, .course-chapters-container, .feature-details { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+        /* Container for scrollable content */
+        .chapter-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .chapter-details.open {
+            /* max-height is now set by JS to fit content */
+            overflow: visible; /* Allow content to be seen */
+            margin-top: 1rem;
+        }
+        /* This container holds the text AND the resources footer */
+      
+
+
+        .course-chapters-container { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.5s ease-in-out;
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--text-muted) var(--bg-accent); /* Firefox */
+        }
         
-        .course-toggle-btn .fa-chevron-down, .feature-card .toggle-icon, .chapter-card .toggle-icon, #theme-switcher-btn .fa-chevron-down { transition: transform 0.3s ease; }
-        .course-toggle-btn.open .fa-chevron-down, .feature-card.open .toggle-icon, .chapter-card.open .toggle-icon, #theme-switcher-btn.open .fa-chevron-down { transform: rotate(180deg); }
+        .feature-details { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+
+        .course-toggle-btn .fa-chevron-down, .feature-card .toggle-icon, .chapter-read-more .toggle-icon, #theme-switcher-btn .fa-chevron-down { transition: transform 0.3s ease; }
+        .course-toggle-btn.open .fa-chevron-down, .feature-card.open .toggle-icon, .chapter-read-more.open .toggle-icon, #theme-switcher-btn.open .fa-chevron-down { transform: rotate(180deg); }
 
         .like-dislike-btn { cursor: pointer; transition: transform 0.2s, color 0.2s; }
         .like-dislike-btn.voted { color: #4f46e5; }
         .like-dislike-btn.disabled { cursor: not-allowed; opacity: 0.5; }
 
-        .feature-card, .chapter-card { cursor: pointer; }
-        input, textarea { background-color: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); }
+        .feature-card { cursor: pointer; }
+        input, textarea, select { background-color: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); }
 
         /* Popover Styles */
         .chapter-resources-popover {
@@ -226,23 +284,85 @@
             width: 1rem; /* Adjust icon width if needed */
         }
 
+        /* Read More styles */
+        .about-text-container {
+            max-height: 5em; /* Adjust this value to show ~20% initially */
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+            position: relative;
+        }
+        .about-text-container.open {
+            max-height: 1000px; /* Large enough to show all content */
+        }
+        
+        /* Exam Modal Styles */
+        .exam-questions-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--text-muted) var(--bg-accent); /* Firefox */
+        }
+        /* Updated Exam Option Styling */
+        .exam-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .exam-option:hover {
+            background-color: var(--bg-accent);
+        }
+        .exam-option input[type="radio"] {
+            margin-right: 0.75rem; /* mr-3 */
+            height: 1rem; /* h-4 */
+            width: 1rem; /* w-4 */
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+            accent-color: var(--text-primary);
+        }
+        .exam-option span {
+            color: var(--text-secondary);
+        }
+
+        .exam-review-container {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        
+        /* Admin Log Styles */
+        #admin-log-container {
+             background-color: var(--bg-secondary);
+             border: 1px solid var(--border-color);
+        }
+        #admin-log-console {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
 
     </style>
 </head>
 <body class="bg-primary">
 
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-800 to-indigo-600 text-white shadow-md sticky top-0 z-50">
+
+
+<header class="bg-gradient-to-r from-blue-800 to-indigo-600 text-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-6 flex justify-between items-center">
             <a href="#" class="text-xl font-bold text-white">
-                <i class="fas fa-brain text-indigo-300"></i> Digital School-LMS
+                <i class="fas fa-brain text-indigo-300"></i> Digital School
             </a>
             <div class="hidden md:flex items-center space-x-6 text-sm">
                 <a href="#courses" class="nav-link">Courses</a>
                 <a href="#about" class="nav-link">About</a>
                 <a href="#testimonials" class="nav-link">Testimonials</a>
                 <a href="#contact" class="nav-link">Contact Us</a>
-                <button data-action="open-auth" class="get-started-btn bg-gray-100 text-blue-800 px-4 py-2 rounded-lg cta-button font-semibold">Get Started</button>
+                <button data-action="open-auth" data-tab="signin" class="get-started-btn bg-gray-100 text-blue-800 px-4 py-2 rounded-lg cta-button font-semibold">Get Started</button>
                  <div class="relative">
                     <button id="theme-switcher-btn" data-action="toggle-theme" class="text-white hover:text-gray-200 flex items-center gap-2" aria-label="Theme switcher" aria-expanded="false">
                         <i class="fas fa-palette text-lg"></i>
@@ -258,7 +378,7 @@
                     </div>
                 </div>
             </div>
-            <button id="mobile-menu-button" class="md:hidden text-white" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+            <button id="mobile-menu-button" data-action="toggle-mobile-menu" class="md:hidden text-white" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
         </nav>
@@ -268,7 +388,7 @@
              <a href="#testimonials" class="nav-link-mobile block py-2 px-4 text-sm text-gray-200 hover:bg-blue-700">Testimonials</a>
              <a href="#contact" class="nav-link-mobile block py-2 px-4 text-sm text-gray-200 hover:bg-blue-700">Contact Us</a>
              <div class="border-t border-blue-700 my-2"></div>
-             <button class="get-started-btn block w-full text-left py-2 px-4 text-sm text-gray-200 hover:bg-blue-700" data-action="open-auth">Join Us</button>
+             <button class="get-started-btn block w-full text-left py-2 px-4 text-sm text-gray-200 hover:bg-blue-700" data-action="open-auth" data-tab="signin">Join Us</button>
         </div>
     </header>
 
@@ -293,36 +413,35 @@
 
         <section id="about" class="py-20 bg-secondary">
             <div class="container mx-auto px-6">
-                 <div class="flex flex-col md:flex-row items-center">
-                    <div class="md:w-1/2">
+                 <div class="flex flex-col md:flex-row items-start">
+                    <div class="md:w-1/2 md:pr-12">
                         <h2 class="text-2xl md:text-3xl font-bold text-primary mb-4">About Digital School-LMS</h2>
-                        <p class="text-secondary mb-6">
-
-Digital School-LMS is a modern, responsive, and fully interactive Learning Management System (LMS) HTML website template designed for educational institutions, online academies, training centers, and e-learning startups.
-Built with clean, well-structured code and a sleek user interface, it delivers a smooth experience for both instructors and learners.
-
-The template features a dynamic color theme switcher, allowing users to personalize their viewing experience. Its elegant multi-page structure includes dedicated sections for Courses, About, Testimonials, and Contact Us, all accessible from a stylish fixed header with integrated Sign In and Sign Up buttons for quick authentication flow.
-
-The Courses page is the heart of the site — offering options to view, upload, or download PDF materials, and embed unlimited YouTube videos and images. Each course listing is designed to be interactive, visually appealing, and easy to navigate.
-
-Whether you’re launching an online school, professional training platform, or academic website, Digital School-LMS provides a robust front-end foundation that’s ready for backend integration or direct deployment.
-
- <h1>Key Features</h1>
-
-<li> Fully responsive and mobile-friendly layout</li>
-<li>Multiple theme color options (live color switcher)</li>
-<li>Interactive course modules with video and document integration</li>
-<li>User authentication pages: Sign In, Sign Up, and Course-based Login</li>
-<li>Modern navigation bar with hover and dropdown effects</li>
-<li>SEO-ready clean HTML, CSS, and JS structure</li>
-<li>Optimized for performance and cross-browser compatibility
-</li>
-</p>
-
-  <p class="text-secondary">We believe that by empowering individuals with AI and Python skills, we can drive innovation and solve real-world problems.</p>
+                        <div id="about-text-wrapper" class="about-text-container">
+                            <p class="text-secondary mb-6">Digital School-LMS is a modern, responsive, and fully interactive Learning Management System (LMS) HTML website template designed for educational institutions, online academies, training centers, and e-learning startups.</p>
+                            <p class="text-secondary mb-6">Built with clean, well-structured code and a sleek user interface, it delivers a smooth experience for both instructors and learners.</p>
+                            <p class="text-secondary mb-6">The template features a dynamic color theme switcher, allowing users to personalize their viewing experience. Its elegant multi-page structure includes dedicated sections for Courses, About, Testimonials, and Contact Us, all accessible from a stylish fixed header with integrated Sign In and Sign Up buttons for quick authentication flow.</p>
+                            <p class="text-secondary mb-6">The Courses page is the heart of the site — offering options to view, upload, or download PDF materials, and embed unlimited YouTube videos and images. Each course listing is designed to be interactive, visually appealing, and easy to navigate.</p>
+                            <p class="text-secondary mb-6">Whether you’re launching an online school, professional training platform, or academic website, Digital School-LMS provides a robust front-end foundation that’s ready for backend integration or direct deployment.</p>
+                            <h3 class="text-lg font-semibold text-primary mt-6 mb-4">✨ Key Features</h3>
+                            <ul class="list-disc list-inside text-secondary mb-6 space-y-2 pl-4">
+                                <li>Fully responsive and mobile-friendly layout</li>
+                                <li>Multiple theme color options (live color switcher)</li>
+                                <li>Interactive course modules with video and document integration</li>
+                                <li>User authentication pages: Sign In, Sign Up, and Course-based Login</li>
+                                <li>Modern navigation bar with hover and dropdown effects</li>
+                                <li>SEO-ready clean HTML, CSS, and JS structure</li>
+                                <li>Optimized for performance and cross-browser compatibility</li>
+                            </ul>
+                        </div>
+                         <button id="read-more-about" class="mt-4 text-indigo-600 hover:text-indigo-800 font-semibold" data-action="toggle-about-text">Read More</button>
                     </div>
-                    <div class="md:w-1/2 mt-8 md:mt-0 md:pl-12">
-                         <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop" alt="Digital School Team Collaborating" class="rounded-lg shadow-xl">
+                    <div class="md:w-1/2 mt-8 md:mt-0">
+                         <!-- Image loading spinner -->
+                        <div id="about-image-loader" class="w-full min-h-[300px] flex items-center justify-center bg-accent rounded-lg">
+                            <i class="fas fa-spinner fa-spin text-4xl text-indigo-600"></i>
+                        </div>
+                         <!-- AI Generated Image will be loaded here -->
+                         <img id="about-us-image" alt="Digital School Team Collaborating" class="rounded-lg shadow-xl w-full h-auto object-cover hidden">
                     </div>
                 </div>
             </div>
@@ -332,7 +451,7 @@ Whether you’re launching an online school, professional training platform, or 
             <div class="container mx-auto px-6">
                 <h2 class="text-2xl md:text-3xl font-bold text-center text-primary">Why Choose Us?</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                    <div class="feature-card p-6 rounded-lg transition-shadow" role="button" tabindex="0" aria-expanded="false" data-action="toggle-feature">
+                    <div class="feature-card p-6 rounded-lg transition-shadow" data-action="toggle-feature" role="button" tabindex="0" aria-expanded="false">
                         <div class="flex items-center justify-between">
                              <div class="flex items-center"><div class="text-3xl text-indigo-600 mr-4"><i class="fas fa-chalkboard-teacher"></i></div><h3 class="text-lg font-bold text-primary">Expert Instructors</h3></div>
                             <i class="fas fa-chevron-down toggle-icon text-muted"></i>
@@ -353,7 +472,7 @@ Whether you’re launching an online school, professional training platform, or 
                             </div>
                         </div>
                     </div>
-                    <div class="feature-card p-6 rounded-lg transition-shadow" role="button" tabindex="0" aria-expanded="false" data-action="toggle-feature">
+                    <div class="feature-card p-6 rounded-lg transition-shadow" data-action="toggle-feature" role="button" tabindex="0" aria-expanded="false">
                          <div class="flex items-center justify-between">
                              <div class="flex items-center"><div class="text-3xl text-indigo-600 mr-4"><i class="fas fa-laptop-code"></i></div><h3 class="text-lg font-bold text-primary">Hands-On Projects</h3></div>
                             <i class="fas fa-chevron-down toggle-icon text-muted"></i>
@@ -374,7 +493,7 @@ Whether you’re launching an online school, professional training platform, or 
                             </div>
                         </div>
                     </div>
-                    <div class="feature-card p-6 rounded-lg transition-shadow" role="button" tabindex="0" aria-expanded="false" data-action="toggle-feature">
+                    <div class="feature-card p-6 rounded-lg transition-shadow" data-action="toggle-feature" role="button" tabindex="0" aria-expanded="false">
                          <div class="flex items-center justify-between">
                              <div class="flex items-center"><div class="text-3xl text-indigo-600 mr-4"><i class="fas fa-users"></i></div><h3 class="text-lg font-bold text-primary">Community Support</h3></div>
                             <i class="fas fa-chevron-down toggle-icon text-muted"></i>
@@ -398,7 +517,7 @@ Whether you’re launching an online school, professional training platform, or 
                 </div>
             </div>
         </section>
-        
+
         <section id="testimonials" class="py-20 bg-accent">
             <div class="container mx-auto px-6">
                 <h2 class="text-2xl md:text-3xl font-bold text-center text-primary">What Our Students Say</h2>
@@ -422,6 +541,19 @@ Whether you’re launching an online school, professional training platform, or 
                 <div class="max-w-xl mx-auto mt-12"><form class="p-8 rounded-lg shadow-dynamic"><div class="mb-4"><label for="name" class="block text-primary font-bold mb-2">Name</label><input type="text" id="name" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Your Name"></div><div class="mb-4"><label for="email" class="block text-primary font-bold mb-2">Email</label><input type="email" id="email" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Your Email"></div><div class="mb-4"><label for="message" class="block text-primary font-bold mb-2">Message</label><textarea id="message" rows="4" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Your Message"></textarea></div><div class="text-center"><button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold cta-button">Send Message</button></div></form></div>
             </div>
         </section>
+        
+        <!-- Simulated Admin Log -->
+        <section id="admin-log" class="py-20 bg-primary">
+            <div class="container mx-auto px-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-primary mb-12">Simulated Admin Email Log</h2>
+                <div id="admin-log-container" class="max-w-3xl mx-auto p-6 rounded-lg shadow-dynamic">
+                    <h3 class="text-lg font-semibold text-primary mb-4">Incoming Exam Results:</h3>
+                    <div id="admin-log-console" class="p-4 rounded-md">
+                        <p class="text-muted">Waiting for first exam submission...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="bg-gray-800 text-white py-12">
@@ -434,7 +566,7 @@ Whether you’re launching an online school, professional training platform, or 
             </div>
         </div>
     </footer>
-    
+
     <!-- Auth Modal -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-modal p-8 rounded-lg shadow-xl w-full max-w-md">
@@ -443,26 +575,26 @@ Whether you’re launching an online school, professional training platform, or 
             </div>
             <div class="mb-6">
                 <div class="flex border-b border-color">
-                    <button id="signin-tab" data-action="show-signin" class="py-2 px-4 font-semibold text-muted w-1/2">Sign In</button>
-                    <button id="signup-tab" data-action="show-signup" class="py-2 px-4 font-semibold text-muted w-1/2">Sign Up</button>
+                    <button data-action="auth-tab" data-tab="signin" class="py-2 px-4 font-semibold text-indigo-600 border-b-2 border-indigo-600 w-1/2">Sign In</button>
+                    <button data-action="auth-tab" data-tab="signup" class="py-2 px-4 font-semibold text-muted w-1/2">Sign Up</button>
                 </div>
             </div>
             <!-- Sign In Form -->
             <form id="signin-form">
                 <div class="mb-4"><label for="signin-email" class="block text-primary text-sm font-bold mb-2">Email</label><input type="email" id="signin-email" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500" required></div>
                 <div class="mb-6"><label for="signin-password" class="block text-primary text-sm font-bold mb-2">Password</label><input type="password" id="signin-password" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500" required></div>
-                <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 cta-button">Sign In</button>
+                <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 cta-button" data-action="submit-auth">Sign In</button>
             </form>
             <!-- Sign Up Form -->
             <form id="signup-form" class="hidden">
                 <div class="mb-4"><label for="signup-name" class="block text-primary text-sm font-bold mb-2">Name</label><input type="text" id="signup-name" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500" required></div>
                 <div class="mb-4"><label for="signup-email" class="block text-primary text-sm font-bold mb-2">Email</label><input type="email" id="signup-email" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500" required></div>
                 <div class="mb-6"><label for="signup-password" class="block text-primary text-sm font-bold mb-2">Password</label><input type="password" id="signup-password" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500" required></div>
-                <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 cta-button">Sign Up</button>
+                <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 cta-button" data-action="submit-auth">Sign Up</button>
             </form>
         </div>
     </div>
-    
+
     <!-- Module Viewer Modal -->
     <div id="module-viewer-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-secondary p-8 rounded-lg shadow-xl w-11/12 md:w-1/2 max-w-2xl max-h-[90vh] flex flex-col">
@@ -491,11 +623,157 @@ Whether you’re launching an online school, professional training platform, or 
             </div>
         </div>
     </div>
+    
+    <!-- Exam Sign-in Modal (NEW TABBED VERSION) -->
+    <div id="exam-signin-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-modal p-8 rounded-2xl shadow-xl w-full max-w-md">
+            
+            <!-- Close Button -->
+            <div class="flex justify-end">
+                <button data-action="close-exam-signin" class="text-muted hover:text-primary text-2xl">&times;</button>
+            </div>
+
+            <!-- Tab Toggles -->
+            <div class="flex justify-center mb-6 rounded-lg bg-accent p-1">
+                <button data-action="exam-auth-tab" data-tab="signup" class="exam-signup-tab w-1/2 py-2 rounded-lg font-semibold transition-all bg-secondary text-indigo-600 shadow">
+                    Sign Up
+                </button>
+                <button data-action="exam-auth-tab" data-tab="signin" class="exam-signin-tab w-1/2 py-2 rounded-lg font-semibold transition-all text-muted">
+                    Sign In
+                </button>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div id="exam-signup-form-container">
+                <h2 class="text-2xl font-bold text-primary text-center">Create Your Account</h2>
+                <p class="text-muted text-center mb-6">Enter your details to begin the exam.</p>
+                <form id="exam-signup-form">
+                    <div class="mb-4">
+                        <label for="exam-full-name" class="block text-primary text-sm font-bold mb-2">Full Name</label>
+                        <input type="text" id="exam-full-name" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 border border-color" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="exam-email-signup" class="block text-primary text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="exam-email-signup" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 border border-color" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="exam-password-signup" class="block text-primary text-sm font-bold mb-2">Password</label>
+                        <input type="password" id="exam-password-signup" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 border border-color" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="exam-confirm-password" class="block text-primary text-sm font-bold mb-2">Confirm Password</label>
+                        <input type="password" id="exam-confirm-password" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 border border-color" required>
+                    </div>
+                    <div id="exam-signup-error" class="text-red-500 text-sm text-center mb-4 hidden"></div>
+                    <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-indigo-700 cta-button">Create Account & Start Exam</button>
+                </form>
+            </div>
+
+            <!-- Sign In Form -->
+            <div id="exam-signin-form-container" class="hidden">
+                <h2 class="text-2xl font-bold text-primary text-center">Sign In to Your Account</h2>
+                <p class="text-muted text-center mb-6">Enter your credentials to continue.</p>
+                <form id="exam-signin-form">
+                    <div class="mb-4">
+                        <label for="exam-email-signin" class="block text-primary text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="exam-email-signin" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 border border-color" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="exam-password-signin" class="block text-primary text-sm font-bold mb-2">Password</label>
+                        <input type="password" id="exam-password-signin" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 border border-color" required>
+                    </div>
+                    <div id="exam-signin-error" class="text-red-500 text-sm text-center mb-4 hidden"></div>
+                    <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-indigo-700 cta-button">Sign In & Start Exam</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Exam Modal -->
+    <div id="exam-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-modal p-8 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4 border-b border-color pb-4">
+                <h3 id="exam-title" class="text-2xl font-bold text-primary">Exam</h3>
+                <div id="exam-timer" class="text-2xl font-bold text-red-600">10:00</div>
+            </div>
+            
+            <!-- Exam Progress Bar -->
+            <div class="mb-4">
+                <div class="flex justify-between text-sm text-muted mb-1">
+                    <span id="exam-progress-text">Question 1 of 10</span>
+                    <span id="exam-progress-percent">10%</span>
+                </div>
+                <div class="w-full bg-accent rounded-full h-2.5">
+                    <div id="exam-progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 10%"></div>
+                </div>
+            </div>
+
+            <form id="exam-form">
+                <!-- Exam questions container will be populated by JS -->
+                <div class="exam-questions-container space-y-6 p-2">
+                    <!-- Single question will be shown here -->
+                </div>
+                
+                <div class="flex justify-end mt-6">
+                    <button type="button" id="exam-next-btn" data-action="exam-next" class="w-full md:w-auto bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 cta-button">Next Question</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Exam Results Modal -->
+    <div id="exam-results-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-modal p-8 rounded-lg shadow-xl w-full max-w-2xl text-center max-h-[90vh] flex flex-col">
+            <h3 id="results-title" class="text-3xl font-bold text-primary mb-4">Exam Complete!</h3>
+            <p id="results-score" class="text-2xl text-secondary mb-2">Your Score: <span class="font-bold">8/10</span></p>
+            <p id="results-status" class="text-4xl font-bold text-green-600 mb-6">PASS</p>
+            
+            <!-- Exam Review Section -->
+            <div id="exam-review-section" class="hidden text-left border-t border-color pt-4 mt-4">
+                <h4 class="text-xl font-bold text-primary mb-4 text-center">Review Your Answers</h4>
+                <div class="exam-review-container space-y-4 p-4 bg-accent rounded-lg">
+                    <!-- Review questions will be populated by JS -->
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 mt-6">
+                <button data-action="review-exam" class="w-full md:w-1/2 bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700 cta-button">Review Answers</button>
+                <button data-action="close-exam-results" class="w-full md:w-1/2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 cta-button">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Auth Modal (NEW) -->
+    <div id="admin-auth-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-modal p-8 rounded-lg shadow-xl w-full max-w-md">
+            <h3 class="text-2xl font-bold text-primary mb-4">Admin Authorization</h3>
+            <p class="text-secondary mb-6">Please enter your admin email to grant this retake.</p>
+            <form id="admin-auth-form">
+                <div class="mb-4">
+                    <label for="admin-email" class="block text-primary text-sm font-bold mb-2">Admin Email</label>
+                    <input type="email" id="admin-email" class="w-full px-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 border border-color" required>
+                </div>
+                <div class="flex justify-end gap-4 mt-6">
+                    <button type="button" data-action="close-admin-auth" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700">Authorize</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
              // --- Global Data Store ---
             let isUserLoggedIn = false; // Login state
+            let examTimerInterval = null; // To store the timer
+            let currentExamStudent = {}; // To store student info
+            let currentExamAnswers = {}; // To store answers for the current exam
+            let currentExamQuestions = []; // To store the questions for the current exam
+            let currentQuestionIndex = 0; // To track the current question
+            let lastExamResult = {}; // To store the last exam result for review
+            let examRetakeList = []; // List of emails allowed to retake
+
             const chapterFiles = {};
             const chapterVideos = {}; // Store for uploaded videos
             const testimonials = [
@@ -516,10 +794,21 @@ Whether you’re launching an online school, professional training platform, or 
             const videoViewerModal = document.getElementById('video-viewer-modal'); // Video modal ref
             const themeSwitcherBtn = document.getElementById('theme-switcher-btn');
             const themeOptions = document.getElementById('theme-options');
-            const signinForm = document.getElementById('signin-form');
-            const signupForm = document.getElementById('signup-form');
-            const signinTab = document.getElementById('signin-tab');
-            const signupTab = document.getElementById('signup-tab');
+            // Exam Modals
+            const examSigninModal = document.getElementById('exam-signin-modal');
+            const examModal = document.getElementById('exam-modal');
+            const examResultsModal = document.getElementById('exam-results-modal');
+            const adminLogConsole = document.getElementById('admin-log-console');
+            const adminAuthModal = document.getElementById('admin-auth-modal'); // New Modal
+            
+            // Exam Forms
+            const examSignupForm = document.getElementById('exam-signup-form');
+            const examSigninForm = document.getElementById('exam-signin-form'); // Corrected
+            const examForm = document.getElementById('exam-form');
+            const adminAuthForm = document.getElementById('admin-auth-form'); // New Form
+            
+            const authSigninForm = document.getElementById('signin-form');
+            const authSignupForm = document.getElementById('signup-form');
 
 
             // --- Course Data ---
@@ -529,14 +818,14 @@ Whether you’re launching an online school, professional training platform, or 
                     title: 'A Comprehensive Course on Artificial Intelligence',
                     icon: 'fa-brain',
                     chapters: [
-                        { chapter: 1, title: 'What is Artificial Intelligence?', description: 'Defining AI through the Turing Test and Chinese Room Argument, and exploring its history from Dartmouth to Deep Learning and its presence in everyday life.', details: `Artificial Intelligence (AI) is a vast and interdisciplinary field of computer science focused on creating systems or machines capable of performing tasks that typically require human intelligence. These tasks include learning, reasoning, problem-solving, perception, language understanding, and decision-making.<br><br>Below is a deep, structured, and comprehensive breakdown of AI from foundational principles to modern applications and ethical implications.`},
+                        { chapter: 1, title: 'What is Artificial Intelligence?', description: 'Artificial Intelligence (AI) is a vast and interdisciplinary field of computer science focused on creating systems or machines capable of performing tasks that typically require human intelligence.', details: `These tasks include learning, reasoning, problem-solving, perception, language understanding, and decision-making.<br><br>Below is a deep, structured, and comprehensive breakdown of AI from foundational principles to modern applications and ethical implications.`},
                         { chapter: 2, title: 'The Philosophy and Ethics of AI', description: 'Examining the profound questions of AI consciousness, the sources and mitigation of bias, and the ethical frameworks needed for responsible AI.', details: 'Delve into the ethical maze of AI. We will discuss consciousness, the critical issue of bias in algorithms, and how society can prepare for the future of work alongside intelligent systems.' },
                         { chapter: 3, title: 'Introduction to Machine Learning', description: 'Learn what machine learning is, its different types (supervised, unsupervised, reinforcement), and the complete ML workflow from data to evaluation.', details: 'This chapter lays the groundwork for all of machine learning, introducing the fundamental concepts and the structured process that takes an idea from raw data to a functional model.' },
                         { chapter: 4, title: 'Supervised Learning', description: 'Master regression and classification techniques, from Linear Regression and SVMs to Decision Trees, and learn how to evaluate their performance.', details: 'A deep dive into supervised learning where you will build models that predict outcomes. We cover key algorithms and the metrics like accuracy, precision, and recall used to measure success.' },
                         { chapter: 5, 'title': 'Unsupervised Learning', description: 'Discover patterns in data using clustering (K-Means), dimensionality reduction (PCA), and association rule learning (Apriori).', details: 'Explore the world of unsupervised learning to find hidden structures in unlabeled data. This chapter focuses on grouping data points, reducing complexity, and finding relationships.' },
                         { chapter: 6, title: 'Essential Mathematics and Tools for AI', description: 'Grasp the essential math concepts and programming tools that are the bedrock of AI, including Linear Algebra, Calculus, and key Python libraries.', details: 'This chapter equips you with the fundamental toolkit for any AI practitioner, covering the necessary linear algebra, calculus, probability, and hands-on introductions to Python, NumPy, Pandas, and Scikit-learn.' },
                         { chapter: 7, title: 'Introduction to Neural Networks', description: 'Compare biological neurons to artificial perceptrons and build your first simple neural network, understanding activation functions like Sigmoid and ReLU.', details: 'Begin your journey into deep learning by understanding its fundamental building block: the neuron. Learn how simple units combine to create powerful predictive models.' },
-                         { chapter: 8, title: 'Projects, Dynamic Resume & Portfolio', description: 'Apply your skills to build real-world projects and learn how to create a dynamic, professional resume and portfolio to showcase your abilities.', details: 'This chapter focuses on practical application. You will work on capstone projects integrating various AI techniques. Learn best practices for creating a standout resume and an online portfolio that dynamically updates to reflect your latest work and skills.' }
+                        { chapter: 8, title: 'Projects, Dynamic Resume & Portfolio', description: 'Apply your AI skills to build a capstone project. Learn how to create a dynamic, AI-powered resume and a professional online portfolio to showcase your work.', details: 'This chapter is all about application. You will build a comprehensive project from scratch, and we will cover the best practices for presenting your skills to employers through a modern, interactive portfolio and resume.' }
                     ]
                 },
                 webdev: {
@@ -544,30 +833,14 @@ Whether you’re launching an online school, professional training platform, or 
                     title: 'Web Development',
                     icon: 'fa-laptop-code',
                     chapters: [
-                        { chapter: 1, title: 'HTML Fundamentals', description: 'Learn the foundational markup language for building web pages. Understand tags, elements, and document structure.', details: 'HTML (HyperText Markup Language) is the skeleton of every webpage. In this module, you will learn to structure content, including headings, paragraphs, lists, links, images, and forms. We will also cover semantic HTML5 elements for building accessible and SEO-friendly sites.'},
-                        { chapter: 2, title: 'CSS Styling', description: 'Discover how to add style to your websites. Learn about selectors, properties, the box model, and layouts.', details: 'CSS (Cascading Style Sheets) brings your HTML to life. We will dive deep into styling, covering colors, fonts, and spacing. You will master modern layout techniques like Flexbox and CSS Grid, and learn how to build responsive designs that look great on any device.'},
-                        { chapter: 3, title: 'JavaScript Essentials', description: 'Master the core programming language of the web. Learn variables, data types, functions, and control flow.', details: 'JavaScript is the engine that powers dynamic web applications. This module covers the fundamentals, including variables, operators, functions, loops, and conditional logic. You will learn how to manipulate the DOM to make your pages interactive.'},
-                        { chapter: 4, title: 'DOM Manipulation', description: 'Learn how to use JavaScript to dynamically change your HTML and CSS, responding to user events.', details: 'The Document Object Model (DOM) is the API for your webpage. Learn to select elements, change their content and styles, and listen for user events like clicks and keypresses to create a fully interactive experience.'},
-                        { chapter: 5, title: 'Asynchronous JavaScript (AJAX)', description: 'Understand asynchronous code, callbacks, Promises, and async/await. Learn to fetch data from external APIs.', details: 'Modern web applications rely on fetching data from servers without a page reload. This chapter covers the concepts of asynchronous programming and the Fetch API, allowing you to load data, post content, and work with third-party services.'},
-                        { chapter: 6, title: 'Introduction to React.js', description: 'Get started with the most popular JavaScript library for building user interfaces. Learn about components, state, and props.', details: 'React.js allows you to build complex, high-performance user interfaces using a component-based architecture. You will learn the basics of JSX, how to manage component state, handle events, and build a simple single-page application (SPA).'},
-                        { chapter: 7, title: 'Full-Stack Concepts', description: 'An overview of what happens on the backend. Understand clients, servers, databases, and APIs.', details: 'This chapter provides a high-level overview of the full stack, explaining how the frontend you build communicates with a backend server, how data is stored in a database, and how APIs act as the bridge between them.'},
-                         { chapter: 8, title: 'Projects, Dynamic Resume & Portfolio', description: 'Apply your skills to build real-world web applications and learn how to create a dynamic, professional resume and portfolio to showcase your abilities.', details: 'This chapter focuses on practical application. You will work on capstone projects integrating various web development techniques. Learn best practices for creating a standout resume and an online portfolio that dynamically updates to reflect your latest work and skills.' }
-                    ]
-                },
-                bootcamp: {
-                    courseId: 'bootcamp',
-                    title: 'Web Development Bootcamp',
-                    icon: 'fa-rocket',
-                    chapters: [
-                        { chapter: 1, title: 'HTML: The Structure of the Web', description: 'Learn the foundational markup language of all websites. Understand tags, elements, and document structure.', details: 'HTML (HyperText Markup Language) is the skeleton of every webpage. In this module, you will learn to structure content, including headings, paragraphs, lists, links, images, and forms. We will also cover semantic HTML5 elements for building accessible and SEO-friendly sites.'},
-                        { chapter: 2, title: 'CSS: Styling the Web', description: 'Discover how to add style to your websites. Learn about selectors, properties, the box model, and layouts.', details: 'CSS (Cascading Style Sheets) brings your HTML to life. We will dive deep into styling, covering colors, fonts, and spacing. You will master modern layout techniques like Flexbox and CSS Grid, and learn how to build responsive designs that look great on any device.'},
-                        { chapter: 3, title: 'JavaScript: Making Websites Interactive', description: 'Master the core programming language of the web. Learn variables, data types, functions, and control flow.', details: 'JavaScript is the engine that powers dynamic web applications. This module covers the fundamentals, including variables, operators, functions, loops, and conditional logic. You will learn how to manipulate the DOM to make your pages interactive.'},
-                        { chapter:4, title: 'React.js: Building Modern UI', description: 'Introduction to the most popular JavaScript library for building user interfaces. Learn about components, state, and props.', details: 'React.js allows you to build complex, high-performance user interfaces using a component-based architecture. You will learn the basics of JSX, how to manage component state, handle events, and fetch data from APIs to build a complete single-page application (SPA).'},
-                        // Add filler chapters if needed to reach 7/8
-                        { chapter: 5, title: 'State Management in React', description: 'Explore techniques for managing complex application state.', details: 'Learn about React Context, Redux, and Zustand for effective state management in larger React applications.' },
-                        { chapter: 6, title: 'Backend Integration with Node.js', description: 'Connect your React frontend to a simple Node.js backend.', details: 'Learn the basics of Node.js and Express to build a simple API for your React application.' },
-                        { chapter: 7, title: 'Deployment and DevOps Basics', description: 'Learn how to deploy your web application to the cloud.', details: 'Understand the basics of deploying web applications using platforms like Vercel or Netlify, and an introduction to CI/CD concepts.' },
-                        { chapter: 8, title: 'Projects, Dynamic Resume & Portfolio', description: 'Build a full-stack project and create a dynamic resume/portfolio.', details: 'This capstone chapter involves building a complete web application and learning how to effectively showcase your skills and projects to potential employers through a professional online presence.' }
+                        { chapter: 1, title: 'HTML 5: The Structure of the Web', description: 'Learn the foundational markup language of the web. Understand semantic HTML and how to structure a modern webpage.', details: 'This chapter covers all essential HTML tags, from headings and paragraphs to lists, links, images, and forms. We will focus on writing semantic HTML5 that is accessible and SEO-friendly.'},
+                        { chapter: 2, title: 'CSS 3: Styling the Web', description: 'Master the art of styling with CSS. Learn about selectors, the box model, Flexbox, and Grid to create beautiful, responsive layouts.', details: 'Go beyond basic colors and fonts. This chapter dives deep into modern CSS layout techniques like Flexbox and CSS Grid, and explores responsive design with media queries to make your sites look great on all devices.'},
+                        { chapter: 3, title: 'JavaScript Fundamentals (ES6+)', description: 'Bring your websites to life with JavaScript. Learn variables, data types, functions, loops, and DOM manipulation.', details: 'This is a comprehensive introduction to the programming language of the web. You will learn modern JavaScript (ES6+), including `let/const`, arrow functions, and how to interact with the HTML document (DOM).' },
+                        { chapter: 4, title: 'Intermediate JavaScript: APIs and Async', description: 'Explore asynchronous JavaScript, including Promises, async/await, and how to fetch data from third-party APIs.', details: 'Learn how to handle operations that take time, such as fetching data from a server. This chapter is essential for building dynamic web applications that interact with external data sources.'},
+                        { chapter: 5, title: 'Introduction to React.js', description: 'Get started with React, the most popular JavaScript library for building user interfaces. Learn about components, state, and props.', details: 'This chapter introduces the component-based architecture of React. You will learn how to build reusable UI components, manage their state, and pass data using props.'},
+                        { chapter: 6, title: 'React Hooks & State Management', description: 'Dive deeper into React with Hooks like `useState` and `useEffect`. Understand how to manage complex application state.', details: 'Modern React is powered by Hooks. Learn the most important ones to manage component state and side effects, and get an introduction to state management concepts for larger applications.'},
+                        { chapter: 7, title: 'Deployment & Modern Tools', description: 'Learn how to deploy your web applications to the internet. Get an overview of modern tools like Git, npm, and build tools.', details: 'A website isn\'t complete until it\'s live. This chapter covers the basics of version control with Git and how to deploy your static and dynamic sites to platforms like Netlify or Vercel.'},
+                        { chapter: 8, title: 'Projects, Dynamic Resume & Portfolio', description: 'Build a stunning personal portfolio website from scratch to showcase your new web development skills and projects.', details: 'In this capstone chapter, you will combine all your HTML, CSS, and JavaScript skills to design, build, and deploy a professional-quality, multi-page portfolio website that will impress employers.' }
                     ]
                 },
                 python: {
@@ -582,71 +855,234 @@ Whether you’re launching an online school, professional training platform, or 
                         { chapter: 5, title: 'Data Structures: Lists, Tuples, Dictionaries', description: 'Dive into Python\'s core data structures for organizing and manipulating collections of data effectively.', details: 'This chapter explores mutable lists, immutable tuples, and key-value pairs in dictionaries, which are essential for any data-driven application.' },
                         { chapter: 6, title: 'File I/O', description: 'Learn how to read from and write to files on your computer, a fundamental skill for data persistence and processing.', details: 'We will cover opening files, reading line by line, writing data, and properly closing file resources to ensure your data is handled safely.' },
                         { chapter: 7, title: 'Introduction to Object-Oriented Programming (OOP)', description: 'Understand the principles of OOP by creating your own classes and objects.', details: 'This chapter introduces the concepts of classes, objects, attributes, and methods, laying the foundation for building complex, modular, and scalable applications.' },
-                        { chapter: 8, title: 'Projects, Dynamic Resume & Portfolio', description: 'Apply your Python skills to build practical projects and learn how to create a dynamic, professional resume and portfolio.', details: 'This chapter focuses on practical application using Python. You will work on projects like data analysis scripts or simple web apps. Learn best practices for creating a standout resume and an online portfolio that dynamically showcases your Python projects and skills.' }
+                        { chapter: 8, title: 'Projects, Dynamic Resume & Portfolio', description: 'Use your Python skills to build a data-driven application, such as a command-line tool or a simple web scraper, to add to your portfolio.', details: 'This chapter focuses on creating a tangible project. You will also learn how to structure your Python projects and document them effectively for a professional resume and portfolio.' }
+                    ]
+                },
+                bootcamp: {
+                    courseId: 'bootcamp',
+                    title: 'Bootcamp',
+                    icon: 'fa-rocket',
+                    chapters: [
+                        { chapter: 1, title: 'HTML: The Web\'s Foundation', description: 'A rapid, intensive introduction to HTML5. You will learn to build and structure webpages from scratch.', details: 'This module is a high-speed dive into all essential HTML tags, semantic structure, and form creation. By the end, you will be able to create a complete, multi-page static website.'},
+                        { chapter: 2, title: 'CSS: Modern Styling', description: 'From zero to hero in CSS. Learn Flexbox, Grid, and responsive design principles to create stunning, modern layouts.', details: 'This module focuses on the most important, job-ready CSS skills. We will skip outdated techniques and focus directly on building responsive, mobile-first layouts with Flexbox and Grid.'},
+                        { chapter: 3, title: 'JavaScript: The Core', description: 'An accelerated primer on JavaScript for interactivity. You will learn DOM manipulation, event handling, and ES6 syntax.', details: 'This is the engine of the web. This module will get you comfortable with manipulating web pages, handling user events, and understanding core concepts like variables, functions, and loops.'},
+                        { chapter: 4, title: 'React.js: The Component Model', description: 'A fast-paced introduction to React.js. You will learn to think in components and build a single-page application.', details: 'Learn the most in-demand frontend library. This module covers JSX, components, state, props, and hooks (`useState`, `useEffect`) to build a dynamic, interactive web application from scratch.'},
+                        { chapter: 5, title: 'Data Structures & Algorithms', description: 'Intensive review of essential data structures (Arrays, Hash Maps, Trees) and algorithms (Sorting, Searching).', details: 'This module is designed to prepare you for technical interviews. We will focus on the most commonly asked data structure and algorithm questions, and practice whiteboarding solutions.'},
+                        { chapter:6, title: 'Backend Basics: Node.js & Express', description: 'A quick introduction to backend development with Node.js and Express. Learn to build a simple REST API.', details: 'Understand the other side of the stack. This module will teach you how to create a simple server, define API endpoints, and connect to a database to serve data to your React application.'},
+                        { chapter: 7, title: 'Full-Stack Deployment', description: 'Learn to deploy a full-stack MERN (MongoDB, Express, React, Node) application to the cloud.', details: 'Take your application live. This module covers the entire deployment process, including database configuration, environment variables, and hosting services like Heroku or Vercel.'},
+                        { chapter: 8, title: 'Projects, Dynamic Resume & Portfolio', description: 'Build a full-stack capstone project and a portfolio that gets you hired. Includes technical interview prep.', details: 'This is the final, most important module. You will build a large-scale project that showcases all your new skills. We will also focus on resume writing, portfolio building, and mock interviews to prepare you for the job market.' }
                     ]
                 }
             };
             
+            // --- Exam Question Bank ---
+            const examQuestions = {
+                ai: [
+                    { q: "What does 'ANI' stand for?", o: ["Artificial Narrow Intelligence", "Artificial Neutral Intelligence", "Automated Neural Intelligence", "Artificial Network Intelligence"], a: 0 },
+                    { q: "Who is often called the 'father of AI'?", o: ["Alan Turing", "John McCarthy", "Geoffrey Hinton", "Marvin Minsky"], a: 1 },
+                    { q: "The Turing Test is used to measure...", o: ["A machine's processing speed", "A machine's ability to exhibit human-like intelligence", "A machine's ability to see", "A machine's accuracy"], a: 1 },
+                    { q: "Which of these is an example of Supervised Learning?", o: ["Clustering news articles", "Spam email detection", "Customer segmentation", "A chess-playing AI"], a: 1 },
+                    { q: "K-Means is a popular algorithm for...", o: ["Classification", "Regression", "Clustering", "Reinforcement Learning"], a: 2 },
+                    { q: "What is 'Overfitting' in machine learning?", o: ["The model is too simple", "The model performs well on new, unseen data", "The model performs poorly on training data", "The model learns the training data too well, including its noise"], a: 3 },
+                    { q: "What does a 'Perceptron' represent in AI?", o: ["A biological neuron", "A type of dataset", "An artificial neuron", "A layer in a CNN"], a: 2 },
+                    { q: "Which activation function is known for solving the vanishing gradient problem?", o: ["Sigmoid", "ReLU", "Tanh", "Softmax"], a: 1 },
+                    { q: "CNNs are primarily used for what type of data?", o: ["Text", "Audio", "Time-series data", "Images"], a: 3 },
+                    { q: "What does 'NLP' stand for?", o: ["Neural Language Processing", "Natural Language Programming", "Natural Language Processing", "Network Logic Protocol"], a: 2 }
+                ],
+                webdev: [
+                    { q: "What does HTML stand for?", o: ["HyperText Markup Language", "High-Level Text Machine Language", "Hyperlink and Text Markup Language", "Home Tool Markup Language"], a: 0 },
+                    { q: "Which CSS property is used to create space *between* flex items?", o: ["padding", "margin", "gap", "border"], a: 2 },
+                    { q: "What does `===` do in JavaScript?", o: ["Assigns a value", "Compares value only", "Compares value and type", "Compares type only"], a: 2 },
+                    { q: "What is the 'DOM' in web development?", o: ["Data Object Model", "Document Object Model", "Document Orientation Model", "Dynamic Object Management"], a: 1 },
+                    { q: "Which of these is NOT a JavaScript data type?", o: ["string", "boolean", "number", "element"], a: 3 },
+                    { q: "What does 'API' stand for?", o: ["Application Programming Interface", "Automated Programming Interaction", "Application Process Integration", "Applied Program Interface"], a: 0 },
+                    { q: "Which React Hook is used to manage state in a functional component?", o: ["useEffect", "useContext", "useState", "useReducer"], a: 2 },
+                    { q: "In CSS, what does 'CSS' stand for?", o: ["Cascading Style Sheets", "Creative Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"], a: 0 },
+                    { q: "What is the correct syntax for an arrow function?", o: ["function = () => {}", "const myFunc = () => {}", "const myFunc = function() {}", "() => = myFunc {}"], a: 1 },
+                    { q: "What is Git?", o: ["A JavaScript library", "A database", "A CSS framework", "A version control system"], a: 3 }
+                ],
+                python: [
+                    { q: "Who created Python?", o: ["Dennis Ritchie", "Guido van Rossum", "Bjarne Stroustrup", "James Gosling"], a: 1 },
+                    { q: "What is a 'dynamically typed' language?", o: ["Types are checked at compile-time", "You must declare all variable types", "Types are checked at run-time", "It has no data types"], a: 2 },
+                    { q: "Which data structure in Python is an unordered collection of key-value pairs?", o: ["List", "Tuple", "Set", "Dictionary"], a: 3 },
+                    { q: "What is the correct way to write a single-line comment in Python?", o: ["// This is a comment", "/* This is a comment */", "# This is a comment", "<!-- This is a comment -->"], a: 2 },
+                    { q: "What does the 'self' keyword represent in a Python class?", o: ["A global variable", "The class itself", "The instance of the class", "A static method"], a: 2 },
+                    { q: "Which is the correct way to create a function in Python?", o: ["function myFunction():", "def myFunction():", "create myFunction():", "myFunction def():"], a: 1 },
+                    { q: "What is `pip` in Python?", o: ["A web framework", "A package manager", "A data science library", "A testing tool"], a: 1 },
+                    { q: "Which of these is an *immutable* data type?", o: ["List", "Dictionary", "Set", "Tuple"], a: 3 },
+                    { q: "How do you read a line from a file object `f`?", o: ["f.read()", "f.read_line()", "f.line()", "f.readline()"], a: 3 },
+                    { q: "What is the output of `3 * 'abc'`?", o: ["abcabcabc", "9", "TypeError", "abc 3"], a: 0 }
+                ],
+                bootcamp: [
+                    { q: "What is the correct tag for the largest heading in HTML?", o: ["<heading>", "<h6>", "<h1>", "<head>"], a: 2 },
+                    { q: "Which CSS property is used for `flex-direction` and `flex-wrap` in one?", o: ["flex-flow", "flex", "flex-group", "flex-container"], a: 0 },
+                    { q: "Which of these is NOT a React Hook?", o: ["useState", "useContext", "useEvent", "useEffect"], a: 2 },
+                    { q: "What is 'state' in React?", o: ["A plain JavaScript object", "Data that a component owns and can change over time", "A component's props", "A global variable"], a: 1 },
+                    { q: "In Node.js, what is `npm`?", o: ["Node Package Manager", "Node Project Manager", "Node Packet Module", "New Project Manager"], a: 0 },
+                    { q: "A 'callback' function in JavaScript is...", o: ["A function passed into another function as an argument", "A function that calls itself", "A function that has no name", "A built-in function"], a: 0 },
+                    { q: "What is `git clone` used for?", o: ["To create a new branch", "To upload files to GitHub", "To create a copy of a remote repository", "To merge branches"], a: 2 },
+                    { q: "Which data structure uses LIFO (Last-In, First-Out)?", o: ["Queue", "Stack", "Linked List", "Tree"], a: 1 },
+                    { q: "What is a 'REST API'?", o: ["A way to style web pages", "A database", "An architectural style for network-based software", "A JavaScript library"], a: 2 },
+                    { q: "What does 'MERN' stack stand for?", o: ["MongoDB, Express, React, Node", "MySQL, Express, React, Node", "MongoDB, EJS, React, Node", "MySQL, EJS, Redux, Node"], a: 0 }
+                ]
+            };
+
+
+            // --- Utility Functions ---
+
+            /**
+             * Fetches a resource with exponential backoff.
+             * @param {string} url - The URL to fetch.
+             * @param {object} options - The fetch options.
+             * @param {number} retries - Number of retries.
+             * @param {number} delay - Initial delay in ms.
+             * @returns {Promise<Response>}
+             */
+            async function fetchWithBackoff(url, options, retries = 5, delay = 1000) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        if (response.status === 429 && retries > 0) {
+                            // Throttled, retry with backoff
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            return fetchWithBackoff(url, options, retries - 1, delay * 2);
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response;
+                } catch (error) {
+                    if (retries > 0) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return fetchWithBackoff(url, options, retries - 1, delay * 2);
+                    } else {
+                        throw error;
+                    }
+                }
+            }
+            
+            /**
+             * Generates the 'About Us' image via API call.
+             */
+            async function generateAboutUsImage() {
+                const loader = document.getElementById('about-image-loader');
+                const imageEl = document.getElementById('about-us-image');
+                
+                const prompt = "A bright, professional illustration for the 'About Us' section of 'Digital School-LMS', showing a diverse group of students and instructors collaborating around computers, with icons representing AI, Python, and web development.";
+                const apiKey = ""; // API key is left empty, will be provided by the environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+                
+                const payload = {
+                    instances: [{ prompt: prompt }],
+                    parameters: { "sampleCount": 1 }
+                };
+
+                try {
+                    const response = await fetchWithBackoff(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                        const base64String = result.predictions[0].bytesBase64Encoded;
+                        imageEl.src = `data:image/png;base64,${base64String}`;
+                        loader.classList.add('hidden');
+                        imageEl.classList.remove('hidden');
+                    } else {
+                        throw new Error("Invalid API response structure");
+                    }
+                } catch (error) {
+                    // Don't log backoff retries as errors
+                    if (!error.message.includes('429')) {
+                        console.error("Error generating 'About Us' image:", error);
+                    }
+                    // Fallback in case of error
+                    loader.innerHTML = '<p class="text-muted p-4">Image could not be loaded.</p>';
+                }
+            }
+
+
             // --- UI Rendering Functions ---
              function createChapterCard(chapter, courseId) {
                 const uniqueId = `${courseId}-details-${chapter.chapter}`;
                 const fileUploadId = `file-upload-${uniqueId}`;
                 const videoUploadId = `video-upload-${uniqueId}`;
                 return `
-                    <div class="chapter-card rounded-lg p-6 flex flex-col min-h-[20rem]" data-chapter-id="${uniqueId}"> 
-                        <div class="chapter-header flex-grow cursor-pointer" data-action="toggle-chapter">
+                    <div class="chapter-card rounded-lg p-6 flex flex-col" data-chapter-id="${uniqueId}"> 
+                        <div class="chapter-header">
                             <div class="flex justify-between items-start mb-3">
                                 <h4 class="text-lg font-bold text-primary pr-4">Chapter ${chapter.chapter}: ${chapter.title}</h4>
-                                <i class="fas fa-chevron-down toggle-icon text-muted"></i>
-                            </div>
-                            <div class="chapter-details space-y-3">
-                                <p class="text-secondary text-sm">${chapter.description}</p>
-                                <p class="text-secondary text-sm" data-action="render-markdown">${chapter.details}</p>
                             </div>
                         </div>
-                        <div class="mt-auto pt-4 border-t border-color relative">
-                             <div class="flex justify-between items-center mt-4">
-                                <div>
-                                    <span class="file-name-display text-xs text-muted block truncate"></span>
+
+                        <!-- Truncated Description -->
+                        <div class="chapter-description-preview mt-2">
+                            <p class="text-secondary text-sm overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                ${chapter.description}
+                            </p>
+                        </div>
+                        
+                        <!-- Read More Button -->
+                        <button class="chapter-read-more text-indigo-600 hover:text-indigo-800 font-semibold text-sm mt-2 flex items-center self-start" data-action="toggle-chapter-details">
+                            Read More <i class="fas fa-chevron-down toggle-icon text-xs ml-2"></i>
+                        </button>
+
+                        <!-- Collapsible Details -->
+                        <div class="chapter-details space-y-3"> 
+                             <div class="chapter-details-content-wrapper">
+                                <div class="chapter-details-text space-y-3"> 
+                                    <p class="text-secondary text-sm">${chapter.description}</p>
+                                    <div class="text-secondary text-sm chapter-details-markdown" data-action="render-markdown">${chapter.details}</div>
+                                </div>
+                                
+                                <div class="chapter-resources-footer pt-4 border-t border-color relative mt-6">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs font-semibold text-primary">Chapter Resources:</span>
+                                        <button class="relative text-primary text-lg p-2 hover:bg-gray-300 rounded-full" data-action="toggle-resources">
+                                            <i class="fas fa-folder-open"></i>
+                                        </button>
+                                        <div class="chapter-resources-popover">
+                                            <label for="${fileUploadId}" class="popover-item attach-files-btn">
+                                                <i class="fas fa-paperclip"></i> Attach Files
+                                            </label>
+                                            <input type="file" id="${fileUploadId}" class="file-input hidden" multiple>
+                                            
+                                            <label for="${videoUploadId}" class="popover-item upload-video-btn">
+                                                <i class="fas fa-video"></i> Upload Video
+                                            </label>
+                                            <input type="file" id="${videoUploadId}" class="video-input hidden" accept="video/*">
+                                            
+                                            <button class="view-module-btn popover-item" data-action="view-module" data-mode="view" disabled>
+                                                <i class="fas fa-eye"></i> View Module
+                                            </button>
+                                            <button class="download-module-btn popover-item" data-action="view-module" data-mode="download" disabled>
+                                                <i class="fas fa-download"></i> Down Load
+                                            </button>
+                                            <button class="view-video-btn popover-item" data-action="view-video" disabled>
+                                                <i class="fas fa-play-circle"></i> View Video
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <span class="file-name-display text-xs text-muted mt-2 block truncate"></span>
                                     <span class="video-name-display text-xs text-green-600 mt-1 block truncate"></span>
                                 </div>
-                                <button class="resources-btn px-3 py-2 rounded-lg text-sm font-semibold transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300" data-action="toggle-resources">
-                                    <i class="fas fa-folder mr-1"></i> Resources
-                                </button>
-                             </div>
-                             <!-- Popover Menu -->
-                             <div class="chapter-resources-popover">
-                                <button class="popover-item" data-action="attach-files">
-                                    <i class="fas fa-paperclip"></i> Attach Files
-                                </button>
-                                <button class="popover-item" data-action="upload-video">
-                                    <i class="fas fa-video"></i> Upload Video
-                                </button>
-                                <button class="popover-item view-module-btn" data-action="view-module" data-mode="view" disabled>
-                                    <i class="fas fa-eye"></i> View Module
-                                </button>
-                                <button class="popover-item download-module-btn" data-action="view-module" data-mode="download" disabled>
-                                    <i class="fas fa-download"></i> Down Load
-                                </button>
-                                <button class="popover-item view-video-btn" data-action="view-video" disabled>
-                                    <i class="fas fa-play"></i> View Video
-                                </button>
                             </div>
-                            <!-- Hidden file inputs -->
-                            <input type="file" id="${fileUploadId}" class="file-input hidden" multiple>
-                            <input type="file" id="${videoUploadId}" class="video-input hidden" accept="video/*">
                         </div>
                     </div>`;
             }
 
             function renderCourses() {
-                const courseOrder = ['ai', 'webdev', 'bootcamp', 'python'];
-                courseOrder.forEach(courseKey => {
-                    const course = courseData[courseKey];
-                    if (!course) return; // Skip if course data is missing
-                    
+                coursesAccordion.innerHTML = ''; // Clear existing
+                Object.values(courseData).forEach(course => {
                     const courseEl = document.createElement('div');
                     courseEl.className = 'main-course-container bg-secondary rounded-lg shadow-sm border border-color';
+                    let innerPaddingClass = 'p-6 pt-0 py-10'; 
+                    if (course.courseId === 'webdev') {
+                        innerPaddingClass += ' py-10';
+                    }
+                    
                     courseEl.innerHTML = `
                         <button class="course-toggle-btn w-full text-left p-6 hover:bg-accent focus:outline-none" data-action="toggle-course" aria-expanded="false" aria-controls="${course.courseId}-chapters">
                             <div class="flex justify-between items-center">
@@ -655,30 +1091,30 @@ Whether you’re launching an online school, professional training platform, or 
                             </div>
                         </button>
                         <div class="course-chapters-container" id="${course.courseId}-chapters">
-                            <div class="p-6 pt-0">
+                            <div class="${innerPaddingClass}"> 
                                 <div class="border-t border-color my-4"></div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                     ${course.chapters.map(c => createChapterCard(c, course.courseId)).join('')}
+                                </div>
+                                <div class="mt-12 text-center">
+                                    <button class="take-exam-btn bg-green-600 text-white px-8 py-3 rounded-lg font-semibold cta-button" data-action="open-exam-signin" data-course-id="${course.courseId}" data-course-title="${course.title}">
+                                        <i class="fas fa-file-signature mr-2"></i> Take Exam
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     `;
                     coursesAccordion.appendChild(courseEl);
                 });
-
-                // Render Markdown for chapter details
-                document.querySelectorAll('[data-action="render-markdown"]').forEach(el => {
-                    el.innerHTML = marked.parse(el.textContent || '');
-                });
             }
-            
+
             function createTestimonialCard({name, text, role, avatar, likes, dislikes}) {
                 const card = document.createElement('div');
                 card.className = 'testimonial-card p-6 rounded-lg';
                 card.innerHTML = `
                     <p class="text-secondary mb-4">"${text}"</p>
                     <div class="flex items-center">
-                        <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-4 text-xl flex-shrink-0">
+                         <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-4 text-xl flex-shrink-0">
                             <i class="fas fa-user"></i>
                         </div>
                         <div><p class="font-bold text-primary">${name}</p><p class="text-sm text-muted">${role}</p></div>
@@ -695,258 +1131,733 @@ Whether you’re launching an online school, professional training platform, or 
                 const commentFormCard = testimonialsGrid.querySelector('.testimonial-card');
                 testimonials.forEach(t => testimonialsGrid.insertBefore(createTestimonialCard(t), commentFormCard));
             }
-            
-            function updateFileList(chapterId, action, mode = 'view') {
-                const files = chapterFiles[chapterId];
+
+            function renderModalFileList(chapterId, mode) {
                 const modalFileList = document.getElementById('modal-file-list');
-                const modalTitle = document.getElementById('modal-title');
-                
-                modalTitle.textContent = mode === 'view' ? 'View Attached Files' : 'Download Attached Files';
+                const files = chapterFiles[chapterId] || [];
                 modalFileList.innerHTML = '';
 
-                if (files && files.length > 0) {
-                    files.forEach((file, index) => {
-                        const fileUrl = URL.createObjectURL(file);
-                        const listItem = document.createElement('div');
-                        listItem.className = 'flex justify-between items-center p-3 bg-accent rounded-md';
-                        listItem.innerHTML = `
-                            <a href="${fileUrl}" target="_blank" class="text-primary hover:text-indigo-700 truncate" ${mode === 'download' ? `download="${file.customName || file.name}"` : ''}>
-                                <span class="file-name" data-index="${index}">${file.customName || file.name}</span>
-                            </a>
-                            <button class="rename-file-btn text-muted hover:text-primary" data-index="${index}" data-action="rename-file">
+                if (files.length === 0) {
+                    modalFileList.innerHTML = '<p class="text-muted">No files attached yet.</p>';
+                    return;
+                }
+
+                files.forEach((fileWrapper, index) => {
+                    const fileUrl = URL.createObjectURL(fileWrapper.file);
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'group flex justify-between items-center p-3 bg-accent rounded-md';
+
+                    fileItem.innerHTML = `
+                        <a href="${fileUrl}" ${mode === 'download' ? 'download="' + fileWrapper.name + '"' : 'target="_blank"'} class="text-primary hover:text-indigo-600 truncate flex-1" title="${fileWrapper.name}">
+                            ${fileWrapper.name}
+                        </a>
+                        <div class="flex-shrink-0">
+                            <button class="rename-file-btn invisible group-hover:visible text-muted hover:text-blue-500" data-action="rename-file" data-index="${index}">
                                 <i class="fas fa-pencil-alt text-xs"></i>
                             </button>
+                        </div>
+                    `;
+                    modalFileList.appendChild(fileItem);
+                });
+            }
+
+            function handleModalFileListClick(e) {
+                const target = e.target;
+                const actionElement = target.closest('[data-action]');
+                if (!actionElement) return;
+
+                const action = actionElement.dataset.action;
+                const chapterId = moduleViewerModal.dataset.chapterId;
+                const files = chapterFiles[chapterId];
+
+                if (action === 'rename-file') {
+                    const index = parseInt(actionElement.dataset.index);
+                    const fileItem = actionElement.closest('.group');
+                    const fileWrapper = files[index];
+                    
+                    if (!fileItem.querySelector('.rename-input')) { // Prevent re-clicking
+                        fileItem.innerHTML = `
+                            <input type="text" value="${fileWrapper.name}" class="rename-input text-sm px-2 py-1 rounded-md border border-color w-full" data-index="${index}">
+                            <button class="save-rename-btn ml-2 text-green-500 hover:text-green-700" data-action="save-rename" data-index="${index}">
+                                <i class="fas fa-check"></i>
+                            </button>
                         `;
-                        modalFileList.appendChild(listItem);
-                    });
-                } else {
-                    modalFileList.innerHTML = `<p class="text-muted">No files attached.</p>`;
+                        fileItem.querySelector('.rename-input').focus();
+                    }
                 }
-                
-                if (action === 'open') {
-                    moduleViewerModal.classList.remove('hidden');
+
+                if (action === 'save-rename') {
+                    const index = parseInt(actionElement.dataset.index);
+                    const fileItem = actionElement.closest('.group');
+                    const input = fileItem.querySelector('.rename-input');
+                    const newName = input.value.trim();
+
+                    if (newName && newName !== files[index].name) {
+                        files[index].name = newName;
+                    }
+                    renderModalFileList(chapterId, moduleViewerModal.dataset.mode); // Re-render the list
                 }
             }
             
-            function handleModalFileListClick(e) {
-                const target = e.target;
-                const renameBtn = target.closest('[data-action="rename-file"]');
+            // --- Exam Functions ---
+            
+            function startExam(courseId, courseTitle) {
+                currentExamQuestions = examQuestions[courseId];
+                if (!currentExamQuestions) return;
                 
-                if (renameBtn) {
-                    const index = renameBtn.dataset.index;
-                    const chapterId = document.querySelector('.chapter-card.modal-source').dataset.chapterId;
-                    const fileNameSpan = renameBtn.closest('.flex').querySelector('.file-name');
-                    const currentName = fileNameSpan.textContent;
-                    
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.value = currentName;
-                    input.className = 'w-full p-1 bg-input border border-color rounded';
-                    
-                    // Replace the anchor tag content, keep the anchor
-                    const anchorTag = fileNameSpan.parentElement;
-                    anchorTag.innerHTML = ''; // Clear existing content
-                    anchorTag.appendChild(input); // Append input
-                    
-                    input.focus();
-                    
-                    const saveName = () => {
-                        const newName = input.value.trim();
-                        if (newName && newName !== currentName) {
-                            chapterFiles[chapterId][index].customName = newName;
-                        }
-                        // Re-render the modal list
-                        const mode = document.getElementById('modal-title').textContent.includes('Download') ? 'download' : 'view';
-                        updateFileList(chapterId, 'update', mode);
-                    };
-                    
-                    input.addEventListener('blur', saveName);
-                    input.addEventListener('keydown', e => {
-                        if (e.key === 'Enter') input.blur();
-                        if (e.key === 'Escape') { input.value = currentName; input.blur(); }
-                    });
+                currentQuestionIndex = 0;
+                currentExamAnswers = {};
+                lastExamResult = {}; // Clear last result
+                
+                examModal.dataset.courseId = courseId;
+                examModal.dataset.courseTitle = courseTitle;
+
+                examModal.querySelector('#exam-title').textContent = `${courseTitle} Exam`;
+                renderCurrentQuestion();
+                
+                examModal.classList.remove('hidden');
+                startTimer(600); // 10 minutes * 60 seconds
+            }
+
+            function renderCurrentQuestion() {
+                const q = currentExamQuestions[currentQuestionIndex];
+                const questionsContainer = examModal.querySelector('.exam-questions-container');
+                questionsContainer.innerHTML = ''; // Clear previous question
+                
+                const questionEl = document.createElement('div');
+                questionEl.className = 'exam-question p-4';
+                questionEl.innerHTML = `
+                    <p class="font-semibold text-primary mb-4 text-lg">${currentQuestionIndex + 1}. ${q.q}</p>
+                    <div class="space-y-3">
+                        ${q.o.map((option, i) => `
+                            <label for="q${currentQuestionIndex}-o${i}" class="exam-option">
+                                <input type="radio" id="q${currentQuestionIndex}-o${i}" name="q${currentQuestionIndex}" value="${i}" ${currentExamAnswers[currentQuestionIndex] === i ? 'checked' : ''}>
+                                <span class="text-secondary">${option}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionEl);
+                
+                // Update Progress Bar
+                const progress = ((currentQuestionIndex + 1) / currentExamQuestions.length) * 100;
+                document.getElementById('exam-progress-text').textContent = `Question ${currentQuestionIndex + 1} of ${currentExamQuestions.length}`;
+                document.getElementById('exam-progress-percent').textContent = `${Math.round(progress)}%`;
+                document.getElementById('exam-progress-bar').style.width = `${progress}%`;
+
+                // Update Next Button
+                const nextBtn = document.getElementById('exam-next-btn');
+                if (currentQuestionIndex === currentExamQuestions.length - 1) {
+                    nextBtn.textContent = 'Submit Exam';
+                } else {
+                    nextBtn.textContent = 'Next Question';
+                }
+            }
+            
+            function handleExamNext() {
+                // Save current answer
+                const selectedOption = examForm.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+                if (selectedOption) {
+                    currentExamAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
+                }
+
+                // Move to next question or submit
+                if (currentQuestionIndex < currentExamQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    renderCurrentQuestion();
+                } else {
+                    submitExam();
                 }
             }
 
+            function startTimer(duration) {
+                let timer = duration;
+                const timerEl = document.getElementById('exam-timer');
+                
+                clearInterval(examTimerInterval); // Clear any existing timer
+                examTimerInterval = setInterval(() => {
+                    let minutes = parseInt(timer / 60, 10);
+                    let seconds = parseInt(timer % 60, 10);
+                    
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+                    
+                    timerEl.textContent = minutes + ":" + seconds;
+                    
+                    if (--timer < 0) {
+                        clearInterval(examTimerInterval);
+                        submitExam(); // Auto-submit when time runs out
+                    }
+                }, 1000);
+            }
+
+            function submitExam() {
+                clearInterval(examTimerInterval);
+                const courseId = examModal.dataset.courseId;
+                const courseTitle = examModal.dataset.courseTitle;
+                const questions = currentExamQuestions;
+                let score = 0;
+
+                for (let i = 0; i < questions.length; i++) {
+                    const answer = currentExamAnswers[i];
+                    if (answer !== undefined && answer === questions[i].a) {
+                        score++;
+                    }
+                }
+
+                const passMark = 7;
+                const didPass = score >= passMark;
+                
+                // Store results for review
+                lastExamResult = {
+                    questions: questions,
+                    answers: currentExamAnswers,
+                    score: score,
+                    total: questions.length,
+                    didPass: didPass
+                };
+                
+                // Show results modal
+                examResultsModal.querySelector('#results-score').textContent = `Your Score: ${score}/${questions.length}`;
+                const statusEl = examResultsModal.querySelector('#results-status');
+                statusEl.textContent = didPass ? 'PASS' : 'FAIL';
+                statusEl.className = `text-4xl font-bold mb-6 ${didPass ? 'text-green-600' : 'text-red-600'}`;
+                
+                // Hide review section initially
+                examResultsModal.querySelector('#exam-review-section').classList.add('hidden');
+                examResultsModal.querySelector('[data-action="review-exam"]').textContent = 'Review Answers';
+                
+                examModal.classList.add('hidden');
+                examResultsModal.classList.remove('hidden');
+                
+                // Log to admin console
+                logToAdmin(currentExamStudent, courseTitle, score, questions.length, didPass);
+                
+                // Clear student info
+                // currentExamStudent = {}; // Keep student info for retake logic
+                examForm.reset();
+            }
+            
+            function renderExamReview() {
+                const reviewContainer = examResultsModal.querySelector('.exam-review-container');
+                reviewContainer.innerHTML = '';
+                
+                lastExamResult.questions.forEach((q, index) => {
+                    const userAnswerIndex = lastExamResult.answers[index];
+                    const userAnswer = (userAnswerIndex !== undefined) ? q.o[userAnswerIndex] : "No Answer";
+                    const correctAnswer = q.o[q.a];
+                    const isCorrect = userAnswerIndex === q.a;
+
+                    const reviewEl = document.createElement('div');
+                    reviewEl.className = `exam-review-item p-4 border rounded-lg ${isCorrect ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'}`;
+                    reviewEl.innerHTML = `
+                        <p class="font-semibold text-primary mb-2">${index + 1}. ${q.q}</p>
+                        <p class="text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'}">
+                            Your Answer: <span class="font-semibold">${userAnswer}</span>
+                        </p>
+                        ${!isCorrect ? `
+                            <p class="text-sm text-green-700 mt-1">
+                                Correct Answer: <span class="font-semibold">${correctAnswer}</span>
+                            </p>
+                        ` : ''}
+                    `;
+                    reviewContainer.appendChild(reviewEl);
+                });
+            }
+            
+            function logToAdmin(student, course, score, total, didPass) {
+                const logEntry = document.createElement('p');
+                logEntry.className = "mb-2"; // Add margin to separate entries
+                const timestamp = new Date().toLocaleTimeString();
+                const status = didPass ? 'PASS' : 'FAIL';
+                
+                let retakeButton = '';
+                // Only show retake button if they failed AND haven't been granted one yet
+                if (!didPass && !examRetakeList.includes(student.email)) {
+                    retakeButton = `<button class="text-xs text-blue-500 hover:text-blue-700 font-semibold ml-4" data-action="grant-retake" data-email="${student.email}">Grant Retake</button>`;
+                } else if (examRetakeList.includes(student.email)) {
+                     retakeButton = `<span class="text-xs text-gray-500 font-semibold ml-4">Retake Granted</span>`;
+                }
+                
+                logEntry.innerHTML = `[${timestamp}] - <span class="font-semibold">${student.lastName}, ${student.firstName}</span> completed <span class="font-semibold">${course}</span>. 
+                                     Result: <span class="font-semibold ${didPass ? 'text-green-600' : 'text-red-600'}">${status}</span> (${score}/${total}). 
+                                     Contact: ${student.email} ${retakeButton}`;
+                
+                if(adminLogConsole.innerHTML.includes('Waiting for first exam submission...')) {
+                    adminLogConsole.innerHTML = '';
+                }
+                adminLogConsole.appendChild(logEntry);
+                adminLogConsole.scrollTop = adminLogConsole.scrollHeight; // Auto-scroll to bottom
+            }
 
             // --- Event Handler Functions ---
-            function toggleAccordion(element, container) {
+            function toggleAccordion(element, container, fixedHeight = null) { // Modified
                 const isOpening = !element.classList.contains('open');
                 element.classList.toggle('open', isOpening);
-                element.setAttribute('aria-expanded', isOpening);
-                container.style.maxHeight = isOpening ? `${container.scrollHeight}px` : '0px';
+                if (element.hasAttribute('aria-expanded')) {
+                    element.setAttribute('aria-expanded', isOpening);
+                }
+                
+                if (isOpening) {
+                    if (fixedHeight) {
+                        container.style.maxHeight = fixedHeight;
+                        container.style.overflowY = 'auto'; // Enable scroll
+                    } else {
+                        container.style.maxHeight = container.scrollHeight + 'px';
+                        container.style.overflowY = 'hidden';
+                    }
+                } else {
+                    container.style.maxHeight = '0px';
+                    container.style.overflowY = 'hidden';
+                }
             }
 
+
             function setAuthModalTab(isSignin) {
-                if (signinTab) {
-                    signinTab.classList.toggle('text-indigo-600', isSignin);
-                    signinTab.classList.toggle('border-indigo-600', isSignin);
-                    signinTab.classList.toggle('text-muted', !isSignin);
-                }
-                if (signupTab) {
-                    signupTab.classList.toggle('text-indigo-600', !isSignin);
-                    signupTab.classList.toggle('border-indigo-600', !isSignin);
-                    signupTab.classList.toggle('text-muted', isSignin);
-                }
-                if (signinForm) signinForm.classList.toggle('hidden', !isSignin);
-                if (signupForm) signupForm.classList.toggle('hidden', isSignin);
+                const signinTab = authModal.querySelector('[data-tab="signin"]');
+                const signupTab = authModal.querySelector('[data-tab="signup"]');
+                const signinForm = authModal.querySelector('#signin-form');
+                const signupForm = authModal.querySelector('#signup-form');
+
+                signinTab.classList.toggle('text-indigo-600', isSignin);
+                signinTab.classList.toggle('border-indigo-600', isSignin);
+                signinTab.classList.toggle('text-muted', !isSignin);
+                signupTab.classList.toggle('text-indigo-600', !isSignin);
+                signupTab.classList.toggle('border-indigo-600', !isSignin);
+                signupTab.classList.toggle('text-muted', isSignin);
+                signinForm.classList.toggle('hidden', !isSignin);
+                signupForm.classList.toggle('hidden', isSignin);
             }
 
             function handleGlobalClick(e) {
                 const target = e.target;
                 const actionElement = target.closest('[data-action]');
-                const action = actionElement?.dataset.action;
-                const chapterCard = target.closest('.chapter-card');
-                const chapterId = chapterCard?.dataset.chapterId;
+
+                // Close any open popovers if clicking outside
+                document.querySelectorAll('.chapter-resources-popover.open').forEach(popover => {
+                    if (!popover.closest('.relative').contains(target)) {
+                        popover.classList.remove('open');
+                    }
+                });
+
+                if (!actionElement) {
+                     if (!target.closest('#theme-options')) {
+                        themeOptions.classList.add('hidden');
+                        themeSwitcherBtn.classList.remove('open');
+                     }
+                    // Handle click-away for modals
+                    if (target === authModal) authModal.classList.add('hidden');
+                    if (target === moduleViewerModal) {
+                        moduleViewerModal.classList.add('hidden');
+                        document.querySelector('.chapter-card.modal-source')?.classList.remove('modal-source');
+                    }
+                    if (target === videoViewerModal) {
+                         const videoPlayer = document.getElementById('modal-video-player');
+                         const videoSource = document.getElementById('modal-video-source');
+                         if(videoPlayer) videoPlayer.pause();
+                         if(videoSource) videoSource.src = "";
+                         videoViewerModal.classList.add('hidden');
+                    }
+                    if (target === examSigninModal) examSigninModal.classList.add('hidden');
+                    if (target === adminAuthModal) adminAuthModal.classList.add('hidden'); // Close admin auth modal on click away
+
+                    return;
+                }
+
+                const action = actionElement.dataset.action;
 
                 switch (action) {
+                    case 'toggle-mobile-menu':
+                        const isExpanded = mobileMenu.classList.toggle('hidden');
+                        mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+                        break;
                     case 'open-auth':
+                        const tab = actionElement.dataset.tab || 'signin';
+                        setAuthModalTab(tab === 'signin');
                         authModal.classList.remove('hidden');
                         if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
-                        setAuthModalTab(true); // Default to Sign In
                         break;
                     case 'close-auth':
                         authModal.classList.add('hidden');
                         break;
-                    case 'show-signin':
-                    case 'show-signup':
-                        setAuthModalTab(action === 'show-signin');
+                    case 'auth-tab':
+                        setAuthModalTab(actionElement.dataset.tab === 'signin');
                         break;
+                    case 'toggle-course':
+                        if (!isUserLoggedIn) {
+                            setAuthModalTab(false); // Default to sign up
+                            authModal.classList.remove('hidden');
+                            return;
+                        }
+                        const container = actionElement.nextElementSibling;
+                        const isOpening = !actionElement.classList.contains('open');
+
+                        document.querySelectorAll('.course-toggle-btn.open').forEach(btn => {
+                            if (btn !== actionElement) {
+                                btn.classList.remove('open');
+                                btn.setAttribute('aria-expanded', 'false');
+                                const otherContainer = btn.nextElementSibling;
+                                otherContainer.style.maxHeight = '0px';
+                                otherContainer.style.overflowY = 'hidden';
+                            }
+                        });
+                        
+                        // Call toggleAccordion with a fixed height for course containers
+                        toggleAccordion(actionElement, container, '70vh'); 
+                        break;
+                    case 'toggle-resources':
+                        const popover = actionElement.nextElementSibling;
+                        popover.classList.toggle('open');
+                        break;
+                    case 'view-module': {
+                        const card = target.closest('.chapter-card');
+                        const chapterId = card.dataset.chapterId;
+                        const mode = actionElement.dataset.mode;
+
+                        moduleViewerModal.dataset.chapterId = chapterId;
+                        moduleViewerModal.dataset.mode = mode;
+                        renderModalFileList(chapterId, mode);
+
+                        const title = (mode === 'download') ? 'Download Files' : 'Attached Files';
+                        moduleViewerModal.querySelector('#modal-title').textContent = title;
+
+                        moduleViewerModal.classList.remove('hidden');
+                        card.classList.add('modal-source');
+                        card.querySelector('.chapter-resources-popover').classList.remove('open');
+                        break;
+                    }
                     case 'close-viewer':
                         moduleViewerModal.classList.add('hidden');
                         document.querySelector('.chapter-card.modal-source')?.classList.remove('modal-source');
                         break;
-                    case 'view-module': { // Scoped mode and chapterId
-                        const mode = actionElement.dataset.mode;
-                        chapterCard.classList.add('modal-source'); // Mark which card opened the modal
-                        updateFileList(chapterId, 'open', mode);
-                        break;
-                    }
-                    case 'view-video': { // Scoped vidChapterId
-                        const vidChapterId = chapterId; // Use chapterId directly
-                        const videoFile = chapterVideos[vidChapterId];
+                    case 'view-video': {
+                        const card = target.closest('.chapter-card');
+                        const chapterId = card.dataset.chapterId;
+                        const videoFile = chapterVideos[chapterId];
                         if (videoFile) {
                             const videoPlayer = document.getElementById('modal-video-player');
                             const videoSource = document.getElementById('modal-video-source');
                             const videoUrl = URL.createObjectURL(videoFile);
-                            
+
                             videoSource.src = videoUrl;
                             videoSource.type = videoFile.type;
                             videoPlayer.load();
                             videoViewerModal.classList.remove('hidden');
+                            card.querySelector('.chapter-resources-popover').classList.remove('open');
                         }
                         break;
                     }
-                    case 'close-video-viewer':
+                    case 'close-video-viewer': {
                         const videoPlayer = document.getElementById('modal-video-player');
                         const videoSource = document.getElementById('modal-video-source');
-                        if (videoPlayer) videoPlayer.pause();
-                        if (videoSource) videoSource.src = ""; // Clear source
+                        if(videoPlayer) videoPlayer.pause();
+                        if(videoSource) videoSource.src = ""; // Clear source
                         videoViewerModal.classList.add('hidden');
                         break;
+                    }
                     case 'toggle-theme':
                         themeOptions.classList.toggle('hidden');
+                        themeSwitcherBtn.classList.toggle('open');
                         break;
                     case 'set-theme':
                         document.documentElement.className = `theme-${actionElement.dataset.theme}`;
+                        themeOptions.classList.add('hidden');
+                        themeSwitcherBtn.classList.remove('open');
                         break;
-                    case 'toggle-course':
-                        if (isUserLoggedIn) { // Check login state
-                            const btn = actionElement; // The button is the element with the action
-                            const container = btn.nextElementSibling;
-                            const isOpening = !btn.classList.contains('open');
-                            document.querySelectorAll('.course-toggle-btn.open').forEach(openBtn => {
-                                if (openBtn !== btn) {
-                                    openBtn.classList.remove('open');
-                                    openBtn.setAttribute('aria-expanded', 'false');
-                                    openBtn.nextElementSibling.style.maxHeight = '0px';
-                                }
-                            });
-                            toggleAccordion(btn, container);
+                    case 'toggle-chapter-details': {
+                        const card = target.closest('.chapter-card');
+                        const details = card.querySelector('.chapter-details'); // Target the details container
+                        const btn = card.querySelector('.chapter-read-more');
+
+                        const isOpen = details.classList.toggle('open');
+                        btn.classList.toggle('open', isOpen);
+
+                        if (isOpen) {
+                            btn.innerHTML = 'Read Less <i class="fas fa-chevron-up toggle-icon text-xs ml-2"></i>';
+                            // Render markdown if it's the first time
+                            const mdTarget = details.querySelector('[data-action="render-markdown"]');
+                            if (mdTarget && !mdTarget.dataset.rendered) {
+                                // Use marked.parse() to convert markdown
+                                mdTarget.innerHTML = marked.parse(mdTarget.innerHTML); // Use innerHTML to parse markdown
+                                mdTarget.dataset.rendered = 'true';
+                            }
+                            // Set max-height to the actual content height for smooth expansion
+                            details.style.maxHeight = details.scrollHeight + 'px';
                         } else {
-                            // User not logged in, open auth modal
-                            authModal.classList.remove('hidden');
-                            if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
-                            setAuthModalTab(false); // Default to Sign Up
+                            btn.innerHTML = 'Read More <i class="fas fa-chevron-down toggle-icon text-xs ml-2"></i>';
+                             details.style.maxHeight = '0px'; // Set max-height to 0 on close
                         }
                         break;
-                    case 'toggle-chapter':
-                        const chapterHeader = actionElement; // The header has the action
-                        const details = chapterHeader.querySelector('.chapter-details');
-                        toggleAccordion(chapterHeader.closest('.chapter-card'), details);
-                        break;
-                    case 'toggle-feature':
+                    }
+                    case 'toggle-feature': {
                         const featureCard = actionElement; // The card has the action
-                        const featureDetails = featureCard.querySelector('.feature-details');
-                        toggleAccordion(featureCard, featureDetails);
+                        const details = featureCard.querySelector('.feature-details');
+                        toggleAccordion(featureCard, details); // No fixed height, use scrollHeight
                         break;
-                    case 'like':
-                    case 'dislike':
-                        const voteContainer = target.closest('[data-vote-state]');
-                        if (voteContainer.dataset.voteState !== 'voted') {
-                            const countSelector = action === 'like' ? '.like-count' : '.dislike-count';
-                            const count = voteContainer.querySelector(countSelector);
+                    }
+                    case 'like': {
+                        const voteContainer = actionElement.closest('[data-vote-state]');
+                        if (voteContainer && voteContainer.dataset.voteState !== 'voted') {
+                            const count = voteContainer.querySelector('.like-count');
                             count.textContent = parseInt(count.textContent) + 1;
                             voteContainer.dataset.voteState = 'voted';
                             voteContainer.querySelectorAll('.like-dislike-btn').forEach(btn => btn.classList.add('disabled'));
                         }
                         break;
-                    case 'toggle-resources': {
-                         const popover = chapterCard.querySelector('.chapter-resources-popover');
-                         popover.classList.toggle('open');
+                    }
+                    case 'dislike': {
+                        const voteContainer = actionElement.closest('[data-vote-state]');
+                        if (voteContainer && voteContainer.dataset.voteState !== 'voted') {
+                            const count = voteContainer.querySelector('.dislike-count');
+                            count.textContent = parseInt(count.textContent) + 1;
+                            voteContainer.dataset.voteState = 'voted';
+                            voteContainer.querySelectorAll('.like-dislike-btn').forEach(btn => btn.classList.add('disabled'));
+                        }
                         break;
                     }
-                    case 'attach-files': {
-                        chapterCard.querySelector('.file-input').click();
+                    case 'toggle-about-text': {
+                        const wrapper = document.getElementById('about-text-wrapper');
+                        const btn = document.getElementById('read-more-about');
+                        const isOpen = wrapper.classList.toggle('open');
+                        btn.textContent = isOpen ? 'Read Less' : 'Read More';
                         break;
                     }
-                    case 'upload-video': {
-                         chapterCard.querySelector('.video-input').click();
+                    // --- Exam Actions ---
+                    case 'open-exam-signin': {
+                        const email = document.getElementById('exam-email-signin').value || currentExamStudent.email; // Check signin form or logged in user
+                        const errorSpan = examSigninModal.querySelector('#exam-signin-error');
+                        const signupErrorSpan = examSigninModal.querySelector('#exam-signup-error');
+                        
+                        // Clear previous errors
+                        errorSpan.classList.add('hidden');
+                        signupErrorSpan.classList.add('hidden');
+
+                        // Check if user has already taken it AND not been granted a retake
+                        if (email && !examRetakeList.includes(email) && adminLogConsole.innerHTML.includes(email)) {
+                            errorSpan.textContent = 'You have already submitted this exam. An admin must grant a retake.';
+                            errorSpan.classList.remove('hidden');
+                        }
+                        
+                        examSigninModal.dataset.courseId = actionElement.dataset.courseId;
+                        examSigninModal.dataset.courseTitle = actionElement.dataset.courseTitle;
+                        examSigninModal.classList.remove('hidden');
                         break;
                     }
-                    // Rename action is handled in handleModalFileListClick
-                }
+                    case 'close-exam-signin':
+                        examSigninModal.classList.add('hidden');
+                        break;
+                    case 'close-admin-auth': // New case
+                        adminAuthModal.classList.add('hidden');
+                        break;
+                    case 'exam-auth-tab': {
+                        const isSignin = actionElement.dataset.tab === 'signin';
+                        const signinTab = examSigninModal.querySelector('.exam-signin-tab');
+                        const signupTab = examSigninModal.querySelector('.exam-signup-tab');
+                        const signinContainer = examSigninModal.querySelector('#exam-signin-form-container');
+                        const signupContainer = examSigninModal.querySelector('#exam-signup-form-container');
 
-                // Close theme dropdown if clicking outside
-                if (themeSwitcherBtn && !themeSwitcherBtn.contains(target) && themeOptions && !themeOptions.contains(target)) {
-                    themeOptions.classList.add('hidden');
+                        // Toggle Tab Styles
+                        signinTab.classList.toggle('bg-white', isSignin);
+                        signinTab.classList.toggle('bg-accent', !isSignin);
+                        signinTab.classList.toggle('text-indigo-600', isSignin);
+                        signinTab.classList.toggle('shadow', isSignin);
+                        signinTab.classList.toggle('text-muted', !isSignin);
+                        
+                        signupTab.classList.toggle('bg-white', !isSignin);
+                        signupTab.classList.toggle('bg-accent', isSignin);
+                        signupTab.classList.toggle('text-indigo-600', !isSignin);
+                        signupTab.classList.toggle('shadow', !isSignin);
+                        signupTab.classList.toggle('text-muted', isSignin);
 
-                }
-                
-                // Close resources popover if clicking outside
-                document.querySelectorAll('.chapter-resources-popover.open').forEach(popover => {
-                     if (!popover.previousElementSibling.contains(target) && !popover.contains(target)) {
-                        popover.classList.remove('open');
+                        // Toggle Form Visibility
+                        signinContainer.classList.toggle('hidden', !isSignin);
+                        signupContainer.classList.toggle('hidden', isSignin);
+                        break;
                     }
-                });
+                    case 'exam-next':
+                        handleExamNext();
+                        break;
+                    case 'close-exam-results':
+                        examResultsModal.classList.add('hidden');
+                        break;
+                    case 'review-exam': {
+                        const reviewSection = examResultsModal.querySelector('#exam-review-section');
+                        const isOpen = !reviewSection.classList.contains('hidden');
+                        if (isOpen) {
+                            reviewSection.classList.add('hidden');
+                            actionElement.textContent = 'Review Answers';
+                        } else {
+                            renderExamReview();
+                            reviewSection.classList.remove('hidden');
+                            actionElement.textContent = 'Hide Review';
+                        }
+                        break;
+                    }
+                    case 'grant-retake': {
+                        const email = actionElement.dataset.email;
+                        if (email && !examRetakeList.includes(email)) {
+                            
+                            // 1. Open the admin auth modal
+                            adminAuthForm.dataset.studentEmail = email; // Pass student email
+                            adminAuthForm.dataset.buttonId = actionElement.id || `btn-retake-${email}`; // Pass a reference
+                            if(!actionElement.id) actionElement.id = `btn-retake-${email}`;
+                            
+                            adminAuthModal.classList.remove('hidden');
+                            adminAuthForm.querySelector('#admin-email').focus();
+                        }
+                        break;
+                    }
+                }
 
-                // Close mobile menu if clicking a nav link
-                if (target.closest('a.nav-link-mobile')) {
-                    e.preventDefault();
-                    const targetElement = document.querySelector(target.closest('a.nav-link-mobile').getAttribute('href'));
-                    if (targetElement) targetElement.scrollIntoView({ behavior: 'smooth' });
-                    mobileMenu.classList.add('hidden');
+                // Close popovers after any action inside them
+                if (actionElement.classList.contains('popover-item')) {
+                    const popover = actionElement.closest('.chapter-resources-popover');
+                    if (popover) popover.classList.remove('open');
+                }
+
+                 // Handle click-away for theme
+                 if (action !== 'toggle-theme' && !target.closest('#theme-options')) {
+                    if(themeOptions) themeOptions.classList.add('hidden');
+                    if(themeSwitcherBtn) themeSwitcherBtn.classList.remove('open');
+                 }
+            }
+            
+            // --- Separate Submit Handlers ---
+            function handleAuthSubmit(e) {
+                e.preventDefault();
+                isUserLoggedIn = true;
+                currentExamStudent.email = e.target.querySelector('input[type="email"]').value; // Store email for retake check
+                authModal.classList.add('hidden');
+                e.target.reset();
+            }
+            
+            function handleExamSigninSubmit(e) {
+                e.preventDefault();
+                const form = e.target;
+                const errorSpan = examSigninModal.querySelector('#exam-signin-error');
+                const email = form.querySelector('input[type="email"]').value;
+                
+                // Check for retake permission
+                if (!examRetakeList.includes(email) && adminLogConsole.innerHTML.includes(`Contact: ${email}`)) {
+                     errorSpan.textContent = 'You have already submitted this exam. An admin must grant a retake.';
+                     errorSpan.classList.remove('hidden');
+                     return;
                 }
                 
-                // Open mobile menu
-                if (target.closest('#mobile-menu-button')) {
-                    mobileMenu.classList.toggle('hidden');
+                // Clear retake token if it exists
+                examRetakeList = examRetakeList.filter(item => item !== email);
+                
+                // Simulate getting user name
+                const fullName = email.split('@')[0];
+                const nameParts = fullName.split('.').map(name => name.charAt(0).toUpperCase() + name.slice(1));
+                
+                currentExamStudent = {
+                    firstName: nameParts[0] || 'Student',
+                    lastName: nameParts.slice(1).join(' ') || 'User',
+                    email: email,
+                    phone: 'N/A' // Not collected on sign-in
+                };
+                
+                const courseId = examSigninModal.dataset.courseId;
+                const courseTitle = examSigninModal.dataset.courseTitle;
+                
+                form.reset();
+                examSigninModal.classList.add('hidden');
+                errorSpan.classList.add('hidden');
+                startExam(courseId, courseTitle);
+            }
+            
+             function handleExamSignupSubmit(e) {
+                e.preventDefault();
+                const form = e.target;
+                const email = form.querySelector('#exam-email-signup').value;
+                const password = form.querySelector('#exam-password-signup').value;
+                const confirmPassword = form.querySelector('#exam-confirm-password').value;
+                const fullName = form.querySelector('#exam-full-name').value;
+                const errorSpan = examSigninModal.querySelector('#exam-signup-error');
+
+                // Check passwords match
+                if (password !== confirmPassword) {
+                    errorSpan.textContent = 'Passwords do not match.';
+                    errorSpan.classList.remove('hidden');
+                    return;
+                }
+
+                // Check for retake permission
+                if (!examRetakeList.includes(email) && adminLogConsole.innerHTML.includes(`Contact: ${email}`)) {
+                     errorSpan.textContent = 'This email has already submitted an exam. An admin must grant a retake.';
+                     errorSpan.classList.remove('hidden');
+                     return;
                 }
                 
-                // Close modal if clicking outside
-                if (target === authModal) authModal.classList.add('hidden');
-                if (target === moduleViewerModal) {
-                    moduleViewerModal.classList.add('hidden');
-                    document.querySelector('.chapter-card.modal-source')?.classList.remove('modal-source');
+                // Clear retake token if it exists
+                examRetakeList = examRetakeList.filter(item => item !== email);
+                
+                const nameParts = fullName.split(' ');
+                currentExamStudent = {
+                    firstName: nameParts[0] || 'Student',
+                    lastName: nameParts.slice(1).join(' ') || 'User',
+                    email: email,
+                    phone: 'N/A' // Not collected on sign-up
+                };
+                
+                const courseId = examSigninModal.dataset.courseId;
+                const courseTitle = examSigninModal.dataset.courseTitle;
+                
+                form.reset();
+                examSigninModal.classList.add('hidden');
+                errorSpan.classList.add('hidden');
+                startExam(courseId, courseTitle);
+            }
+            
+            function handleExamSubmit(e) {
+                e.preventDefault();
+                // Save the last answer before submitting
+                const selectedOption = examForm.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+                if (selectedOption) {
+                    currentExamAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
                 }
-                if (target === videoViewerModal) {
-                     const videoPlayer = document.getElementById('modal-video-player');
-                     const videoSource = document.getElementById('modal-video-source');
-                     if(videoPlayer) videoPlayer.pause();
-                     if(videoSource) videoSource.src = "";
-                     videoViewerModal.classList.add('hidden');
+                submitExam();
+            }
+
+            function handleAdminAuthSubmit(e) {
+                e.preventDefault();
+                const form = e.target;
+                const adminEmail = form.querySelector('#admin-email').value;
+                const studentEmail = form.dataset.studentEmail;
+                
+                if (adminEmail && adminEmail.trim() !== "" && studentEmail) {
+                    // 1. Get timestamp
+                    const timestamp = new Date().toLocaleString();
+                    
+                    // 2. Add to retake list
+                    examRetakeList.push(studentEmail);
+                    
+                    // 3. Find the original button in the log
+                    const button = adminLogConsole.querySelector(`[data-action="grant-retake"][data-email="${studentEmail}"]`);
+                    
+                    if (button) {
+                        // 4. Update the button
+                        button.textContent = 'Retake Granted';
+                        button.classList.add('disabled', 'text-gray-500');
+                        button.disabled = true;
+                        
+                        // 5. Create and append the new audit log entry
+                        const auditLog = document.createElement('p');
+                        auditLog.className = "text-xs text-muted pl-6"; // Indented
+                        auditLog.textContent = `↳ Authorized by: ${adminEmail} on ${timestamp}`;
+                        
+                        // 6. Find the parent log entry and insert this after it
+                        button.closest('p').after(auditLog);
+                    }
+                    
+                    // 7. Close and reset modal
+                    adminAuthModal.classList.add('hidden');
+                    form.reset();
+                    form.dataset.studentEmail = '';
                 }
             }
+
 
             function handleFileChange(e) {
                  if (e.target.classList.contains('file-input')) {
@@ -954,45 +1865,39 @@ Whether you’re launching an online school, professional training platform, or 
                     const chapterCard = fileInput.closest('.chapter-card');
                     const chapterId = chapterCard.dataset.chapterId;
                     const fileNameSpan = chapterCard.querySelector('.file-name-display');
-                    // Find buttons within the popover
-                    const popoverViewBtn = chapterCard.querySelector('.chapter-resources-popover .view-module-btn');
-                    const popoverDownloadBtn = chapterCard.querySelector('.chapter-resources-popover .download-module-btn');
-
+                    const viewModuleBtn = chapterCard.querySelector('.view-module-btn');
+                    const downloadModuleBtn = chapterCard.querySelector('.download-module-btn');
 
                     if (fileInput.files.length > 0) {
                         if (!chapterFiles[chapterId]) chapterFiles[chapterId] = [];
-                        
-                        const newFiles = Array.from(fileInput.files);
-                        newFiles.forEach(file => file.customName = file.name); 
-                        
+
+                        const newFiles = Array.from(fileInput.files).map(file => ({ file: file, name: file.name }));
                         chapterFiles[chapterId].push(...newFiles);
+
                         fileNameSpan.textContent = `${chapterFiles[chapterId].length} file(s) attached.`;
-                        if(popoverViewBtn) popoverViewBtn.disabled = false;
-                        if(popoverDownloadBtn) popoverDownloadBtn.disabled = false;
+                        viewModuleBtn.disabled = false;
+                        downloadModuleBtn.disabled = false;
                     }
-                    fileInput.value = ''; // Reset input
-                    chapterCard.querySelector('.chapter-resources-popover').classList.remove('open'); // Close popover
+                    fileInput.value = '';
                 }
-                 
+
                  if (e.target.classList.contains('video-input')) {
                     const fileInput = e.target;
                     const chapterCard = fileInput.closest('.chapter-card');
                     const chapterId = chapterCard.dataset.chapterId;
                     const videoNameSpan = chapterCard.querySelector('.video-name-display');
-                    // Find button within the popover
-                    const popoverViewVideoBtn = chapterCard.querySelector('.chapter-resources-popover .view-video-btn');
+                    const viewVideoBtn = chapterCard.querySelector('.view-video-btn');
 
                     if (fileInput.files.length > 0) {
                         const videoFile = fileInput.files[0];
                         chapterVideos[chapterId] = videoFile; // Store the video file
                         videoNameSpan.textContent = `Video: ${videoFile.name} attached.`;
-                        if(popoverViewVideoBtn) popoverViewVideoBtn.disabled = false; // Enable the button in popover
+                        viewVideoBtn.disabled = false; // Enable the button
                     }
                     fileInput.value = ''; // Reset
-                    chapterCard.querySelector('.chapter-resources-popover').classList.remove('open'); // Close popover
                 }
             }
-            
+
             function handleCommentSubmit(e) {
                 e.preventDefault();
                 const name = this.elements['comment-name'].value.trim();
@@ -1010,44 +1915,19 @@ Whether you’re launching an online school, professional training platform, or 
             // --- Initial Setup ---
             renderCourses();
             renderTestimonials();
-            setAuthModalTab(true); // Set default tab on load
+            generateAboutUsImage(); // Generate the AI image on load
             
-            // Add global event listeners
             document.addEventListener('click', handleGlobalClick);
             document.addEventListener('change', handleFileChange);
-            
-            const modalFileList = document.getElementById('modal-file-list');
-            if (modalFileList) {
-                modalFileList.addEventListener('click', handleModalFileListClick);
-            }
-            
             if(commentForm) commentForm.addEventListener('submit', handleCommentSubmit);
-            
-            // Add login simulation handlers
-            if(signinForm) signinForm.addEventListener('submit', (e) => {
-                e.preventDefault(); // Prevent actual form submission
-                isUserLoggedIn = true;
-                if(authModal) authModal.classList.add('hidden');
-                 // Re-enable course accordions or trigger open if needed
-                 document.querySelectorAll('.course-toggle-btn').forEach(btn => {
-                    // Optionally, re-render or just remove disabled state if needed
-                 });
-            });
-            
-            if(signupForm) signupForm.addEventListener('submit', (e) => {
-                e.preventDefault(); // Prevent actual form submission
-                isUserLoggedIn = true;
-                if(authModal) authModal.classList.add('hidden');
-                 // Re-enable course accordions or trigger open if needed
-                 document.querySelectorAll('.course-toggle-btn').forEach(btn => {
-                     // Optionally, re-render or just remove disabled state if needed
-                 });
-            });
+            if(authSigninForm) authSigninForm.addEventListener('submit', handleAuthSubmit);
+            if(authSignupForm) authSignupForm.addEventListener('submit', handleAuthSubmit);
+            if(examSigninForm) examSigninForm.addEventListener('submit', handleExamSigninSubmit); // Sign IN
+            if(examSignupForm) examSignupForm.addEventListener('submit', handleExamSignupSubmit); // Sign UP
+            if(examForm) examForm.addEventListener('submit', handleExamSubmit);
+            if(adminAuthForm) adminAuthForm.addEventListener('submit', handleAdminAuthSubmit); // New Handler
+            document.getElementById('modal-file-list').addEventListener('click', handleModalFileListClick);
         });
     </script>
 </body>
 </html>
-
-
-
-
